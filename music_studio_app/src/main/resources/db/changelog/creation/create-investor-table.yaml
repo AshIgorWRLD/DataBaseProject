@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-investor-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: investors
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cit_u_id_u_id
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: invested_money
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: business_part
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false

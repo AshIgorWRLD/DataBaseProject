@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-group-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: groups
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false

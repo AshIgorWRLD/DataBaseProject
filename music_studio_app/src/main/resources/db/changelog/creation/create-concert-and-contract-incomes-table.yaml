@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-concert-and-contract-incomes-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: concert_and_contract_incomes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: artist_or_group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: ccacit_aog_id_ap_id
+                    references: artist_pages(id)
+                    deleteCascade: true
+              - column:
+                  name: type
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: true
+              - column:
+                  name: money_amount
+                  type: NUMERIC
+                  constraints:
+                    unique: false
+                    nullable: false

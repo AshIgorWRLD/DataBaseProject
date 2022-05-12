@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-work-schedule-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: work_schedule
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cwst_e_id_e_id
+                    references: employees(id)
+                    deleteCascade: true
+              - column:
+                  name: week_day
+                  type: INTEGER
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: time_to_come
+                  type: TIME WITH TIME ZONE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: work_length
+                  type: INTEGER
+                  constraints:
+                    unique: false
+                    nullable: false

@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-investor-payments-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: investor_payments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: investor_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cipt_i_id_i_id
+                    references: investors(id)
+                    deleteCascade: true
+              - column:
+                  name: investor_bill_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cipt_ib_id_ib_id
+                    references: investor_bills(id)
+                    deleteCascade: true
+              - column:
+                  name: amount
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false

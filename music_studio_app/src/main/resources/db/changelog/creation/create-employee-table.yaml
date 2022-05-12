@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-employee-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: employees
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cet_u_id_u_id
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: post
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false

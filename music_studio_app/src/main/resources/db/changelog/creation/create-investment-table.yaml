@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-investment-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: investments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: investor_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cit_i_id_i_id
+                    references: investors(id)
+                    deleteCascade: true
+              - column:
+                  name: recipient_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cit_r_id_ap_id
+                    references: artist_pages(id)
+                    deleteCascade: true
+              - column:
+                  name: money_amount
+                  type: NUMERIC
+                  constraints:
+                    unique: false
+                    nullable: false

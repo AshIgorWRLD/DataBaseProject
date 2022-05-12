@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-employee-payments-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: employee_payments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: employee_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: fk_employee_id
+                    references: employees(id)
+                    deleteCascade: true
+              - column:
+                  name: employee_bill_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cept_eb_id_eb_id
+                    references: employee_bills(id)
+                    deleteCascade: true
+              - column:
+                  name: amount
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false

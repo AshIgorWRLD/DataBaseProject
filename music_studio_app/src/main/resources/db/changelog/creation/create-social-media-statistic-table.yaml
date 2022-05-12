@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-social-media-statistic-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: social_media_statistic
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: artist_or_group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: csmst_aog_id_ap_id
+                    references: artist_pages(id)
+                    deleteCascade: true
+              - column:
+                  name: social_network
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: subscribers_amount
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: true
+              - column:
+                  name: live_subscribers
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: true

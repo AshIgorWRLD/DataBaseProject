@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-artist-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: artists
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cat_c_id_c_id
+                    references: clients(id)
+                    deleteCascade: true
+              - column:
+                  name: group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: true
+                    foreignKeyName: cat_g_id_g_id
+                    references: groups(id)
+                    deleteCascade: true
+              - column:
+                  name: stage_name
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: genre
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false

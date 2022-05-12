@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-distribution-service-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: distribution_services
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: listen_watch_cost
+                  type: DOUBLE PRECISION
+                  constraints:
+                    unique: false
+                    nullable: false

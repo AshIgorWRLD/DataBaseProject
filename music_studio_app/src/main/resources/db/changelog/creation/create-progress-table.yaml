@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-progress-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: progress
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: artist_or_group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cpt_aog_id_ap_id
+                    references: artist_pages(id)
+                    deleteCascade: true
+              - column:
+                  name: social_media_coefficient
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: advertisement_companies_coefficient
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: distribution_coefficient
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: incomes_coefficient
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: supposed_success_date
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false

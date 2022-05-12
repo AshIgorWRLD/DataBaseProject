@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-goal-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: goals
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: artist_or_group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cgt_aog_id_ap_id
+                    references: artist_pages(id)
+                    deleteCascade: true
+              - column:
+                  name: progress_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cgt_p_id_p_id
+                    references: progress(id)
+                    deleteCascade: true
+              - column:
+                  name: progress_percentage
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: statement
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: deadline
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: resources
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: true

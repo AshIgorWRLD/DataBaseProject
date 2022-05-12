@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-artists-and-groups-on-event-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: artists_and_groups_on_event
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: artist_or_group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: caagoet_aog_id_ap_id
+                    references: artist_pages(id)
+                    deleteCascade: true
+              - column:
+                  name: event_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: caagoet_e_id_e_id
+                    references: events(id)
+                    deleteCascade: true
+              - column:
+                  name: performance_time
+                  type: TIME WITH TIME ZONE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: income
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false

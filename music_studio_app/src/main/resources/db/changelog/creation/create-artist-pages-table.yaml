@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-artist-pages-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: artist_pages
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: solo_artist_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: true
+                    foreignKeyName: capt_sa_id_a_id
+                    references: artists(id)
+                    deleteCascade: true
+              - column:
+                  name: group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: true
+                    foreignKeyName: capt_g_id_g_id
+                    references: groups(id)
+                    deleteCascade: true

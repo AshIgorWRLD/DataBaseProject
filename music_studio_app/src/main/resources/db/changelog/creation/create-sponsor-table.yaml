@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-sponsor-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: sponsors
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: event_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cst_e_id_e_id
+                    references: events(id)
+                    deleteCascade: true
+              - column:
+                  name: name
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: business_type
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: sponsored_money
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false

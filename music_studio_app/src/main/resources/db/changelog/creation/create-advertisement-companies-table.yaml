@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-advertisment-companies-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: advertisement_companies
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: artist_or_group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cact_aog_id_ap_id
+                    references: artist_pages(id)
+                    deleteCascade: true
+              - column:
+                  name: advertisement_company_name
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: auditory_type
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: advertisement_type
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: expenses
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false

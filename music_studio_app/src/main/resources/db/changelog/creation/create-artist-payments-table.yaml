@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-artist-payments-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: artist_payments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: artist_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: capt_a_id_a_id
+                    references: artists(id)
+                    deleteCascade: true
+              - column:
+                  name: artist_bill_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: capt_ab_id_ab_id
+                    references: artist_bills(id)
+                    deleteCascade: true
+              - column:
+                  name: amount
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false

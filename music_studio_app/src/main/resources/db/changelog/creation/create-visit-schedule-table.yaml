@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-visit-schedule-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: visit_schedule
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cvst_c_id_c_id
+                    references: clients(id)
+                    deleteCascade: true
+              - column:
+                  name: visit_date
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: timing
+                  type: TIME WITH TIME ZONE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: length_of_visit
+                  type: INTEGER
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false

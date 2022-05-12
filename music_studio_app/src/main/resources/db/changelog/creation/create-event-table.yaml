@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-event-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: events
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: event_name
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: audience_amount
+                  type: NUMERIC(12,2)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: point
+                  type: VARCHAR
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: event_date
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: timing
+                  type: TIME WITH TIME ZONE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: event_rank
+                  type: SMALLINT
+                  constraints:
+                    unique: false
+                    nullable: false

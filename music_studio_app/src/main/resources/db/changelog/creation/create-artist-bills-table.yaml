@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-artist-bills-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: artist_bills
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: pay_day
+                  type: DATE
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: month_to_work
+                  type: INTEGER
+                  constraints:
+                    unique: false
+                    nullable: false

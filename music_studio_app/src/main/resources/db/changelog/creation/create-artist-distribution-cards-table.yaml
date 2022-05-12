@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-artist-distribution-cards-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: artist_distribution_cards
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: artist_or_group_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cadct_aog_id_ap_id
+                    references: artist_pages(id)
+                    deleteCascade: true
+              - column:
+                  name: distribution_service_id
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: false
+                    foreignKeyName: cadct_ds_id_ds_id
+                    references: distribution_services(id)
+                    deleteCascade: true
+              - column:
+                  name: listen_watch_amount
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: true
+              - column:
+                  name: monthly_listeners
+                  type: BIGINT
+                  constraints:
+                    unique: false
+                    nullable: true
