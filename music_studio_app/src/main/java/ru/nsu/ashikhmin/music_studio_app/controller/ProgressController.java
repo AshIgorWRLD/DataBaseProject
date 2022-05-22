@@ -80,27 +80,6 @@ public class ProgressController {
         return new ResponseEntity<>(progressRepo.save(progress), HttpStatus.OK);
     }
 
-    /*
-    @PostMapping(consumes = {"*/*"})
-    @ApiOperation("Создание новой страницы исполнителя")
-    public ResponseEntity<List<Progress>> getByAPIds(@Valid @RequestBody ProgressDataSource progressDataSource){
-        log.info("request for creating progress from data source {}",
-                progressDataSource);
-        ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                progressDataSource.getArtistPageId());
-        Progress progress = new Progress(
-                artistPageResponseEntity.getBody(),
-                progressDataSource.getSocialMediaCoefficient(),
-                progressDataSource.getAdvertisementCompaniesCoefficient(),
-                progressDataSource.getDistributionCoefficient(),
-                progressDataSource.getIncomesCoefficient(),
-                progressDataSource.getSupposedSuccessDate());
-
-        log.info("request for creating progress with parameters {}", progress);
-
-        return new ResponseEntity<>(progressRepo.save(progress), HttpStatus.OK);
-    }
-
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей странице исполнителя")
     public ResponseEntity<Progress> update(@PathVariable("id") long id,
