@@ -29,6 +29,7 @@ public class ArtistPage {
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     private Group group;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "recipients")
     private List<Investment> investments;
 

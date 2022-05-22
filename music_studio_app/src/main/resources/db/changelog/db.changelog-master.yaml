@@ -89,6 +89,14 @@ databaseChangeLog:
   - include:
       file: db/changelog/alteration/alter-sponsor-table.sql
   - include:
+      file: db/changelog/creation/create-bills-of-employees-table.yaml
+  - include:
+      file: db/changelog/creation/create-bills-of-investors-table.yaml
+  - include:
+      file: db/changelog/creation/create-bills-of-artists-table.yaml
+  - include:
+      file: db/changelog/creation/create-investments-info-table.yaml
+  - include:
       file: db/changelog/insertion/insert-user-table.sql
   - include:
       file: db/changelog/insertion/insert-investor-table.sql
@@ -140,3 +148,11 @@ databaseChangeLog:
       file: db/changelog/insertion/insert-artists-and-groups-on-event-table.sql
   - include:
       file: db/changelog/insertion/insert-sponsor-table.sql
+  - include:
+      file: db/changelog/insertion/insert-bills-of-employees-table.sql
+  - include:
+      file: db/changelog/insertion/insert-bills-of-investors-table.sql
+  - include:
+      file: db/changelog/insertion/insert-bills-of-artists-table.sql
+  - include:
+      file: db/changelog/insertion/insert-investments-info-table.sql

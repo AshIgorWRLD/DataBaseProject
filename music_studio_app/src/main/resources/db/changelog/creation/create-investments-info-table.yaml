@@ -1,27 +1,27 @@
 databaseChangeLog:
   - changeSet:
-      id: create-bills-of-artists-table
+      id: create-investments-info-table
       author: postgres
       password: 123
       changes:
         - createTable:
-            tableName: bills_of_artists
+            tableName: investments_info
             columns:
               - column:
-                  name: artist_payment_id
+                  name: investment_id
                   type: BIGINT
                   constraints:
                     unique: false
                     nullable: false
-                    foreignKeyName: cboat_ap_id_ap_id
-                    references: artist_payments(id)
+                    foreignKeyName: ciit_i_id_i_id
+                    references: investments(id)
                     deleteCascade: true
               - column:
-                  name: artist_bill_id
+                  name: recipient_id
                   type: BIGINT
                   constraints:
                     unique: false
                     nullable: false
-                    foreignKeyName: cboat_ab_id_ab_id
-                    references: artist_bills(id)
+                    foreignKeyName: ciit_r_id_ap_id
+                    references: artist_pages(id)
                     deleteCascade: true
