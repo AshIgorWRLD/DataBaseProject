@@ -1,0 +1,1 @@
+ALTER TABLE concert_and_contract_incomes ADD CONSTRAINT name CHECK (length(name) > 8);

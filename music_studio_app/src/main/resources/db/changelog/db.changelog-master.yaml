@@ -3,7 +3,11 @@ databaseChangeLog:
   - include:
       file: db/changelog/creation/create-user-table.yaml
   - include:
+      file: db/changelog/alteration/alter-user-table.sql
+  - include:
       file: db/changelog/creation/create-investor-table.yaml
+  - include:
+      file: db/changelog/alteration/alter-investor-table.sql
   - include:
       file: db/changelog/creation/create-client-table.yaml
   - include:
@@ -13,45 +17,77 @@ databaseChangeLog:
   - include:
       file: db/changelog/creation/create-artist-table.yaml
   - include:
+      file: db/changelog/alteration/alter-artist-table.sql
+  - include:
       file: db/changelog/creation/create-artist-pages-table.yaml
   - include:
       file: db/changelog/creation/create-employee-bills-table.yaml
   - include:
       file: db/changelog/creation/create-employee-payments-table.yaml
   - include:
+      file: db/changelog/alteration/alter-employee-payment-table.sql
+  - include:
       file: db/changelog/creation/create-investor-bills-table.yaml
   - include:
       file: db/changelog/creation/create-investor-payments-table.yaml
+  - include:
+      file: db/changelog/alteration/alter-investor-payment-table.sql
   - include:
       file: db/changelog/creation/create-artist-bills-table.yaml
   - include:
       file: db/changelog/creation/create-artist-payments-table.yaml
   - include:
+      file: db/changelog/alteration/alter-artist-payment-table.sql
+  - include:
       file: db/changelog/creation/create-investment-table.yaml
+  - include:
+      file: db/changelog/alteration/alter-investment-table.sql
   - include:
       file: db/changelog/creation/create-concert-and-contract-incomes-table.yaml
   - include:
+      file: db/changelog/alteration/alter-concert-and-contract-incomes-table.sql
+  - include:
       file: db/changelog/creation/create-work-schedule-table.yaml
+  - include:
+      file: db/changelog/alteration/alter-work-schedule-table.sql
   - include:
       file: db/changelog/creation/create-visit-schedule-table.yaml
   - include:
+      file: db/changelog/alteration/alter-visit-schedule-table.sql
+  - include:
       file: db/changelog/creation/create-distribution-service-table.yaml
+  - include:
+      file: db/changelog/alteration/alter-distribution-service-table.sql
   - include:
       file: db/changelog/creation/create-artist-distribution-cards-table.yaml
   - include:
+      file: db/changelog/alteration/alter-artist-distribution-cards-table.sql
+  - include:
       file: db/changelog/creation/create-social-media-statistic-table.yaml
   - include:
+      file: db/changelog/alteration/alter-social-media-statistic-table.sql
+  - include:
       file: db/changelog/creation/create-advertisement-companies-table.yaml
+  - include:
+      file: db/changelog/alteration/alter-advertisement-companies-table.sql
   - include:
       file: db/changelog/creation/create-progress-table.yaml
   - include:
       file: db/changelog/creation/create-goal-table.yaml
   - include:
+      file: db/changelog/alteration/alter-goal-table.sql
+  - include:
       file: db/changelog/creation/create-event-table.yaml
+  - include:
+      file: db/changelog/alteration/alter-event-table.sql
   - include:
       file: db/changelog/creation/create-artists-and-groups-on-event-table.yaml
   - include:
+      file: db/changelog/alteration/alter-artists-and-groups-on-event-table.sql
+  - include:
       file: db/changelog/creation/create-sponsor-table.yaml
+  - include:
+      file: db/changelog/alteration/alter-sponsor-table.sql
   - include:
       file: db/changelog/insertion/insert-user-table.sql
   - include:

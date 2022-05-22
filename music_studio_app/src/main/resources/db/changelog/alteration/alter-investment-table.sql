@@ -1,0 +1,1 @@
+ALTER TABLE investments ADD CONSTRAINT money_amount CHECK (money_amount > 100 AND money_amount < 99999999);

@@ -1,0 +1,1 @@
+ALTER TABLE investor_payments ADD CONSTRAINT amount CHECK (amount > 0);

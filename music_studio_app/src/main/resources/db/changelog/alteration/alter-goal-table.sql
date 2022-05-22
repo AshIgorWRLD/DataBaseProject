@@ -1,0 +1,1 @@
+ALTER TABLE goals ADD CONSTRAINT statement CHECK (length(statement) > 10);

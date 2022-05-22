@@ -10,6 +10,7 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public class ArtistPayment {
     private Long artistBillId;
 
     @NotNull
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToMany (cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
     @JoinTable(name = "bills_of_artists",
@@ -43,7 +44,7 @@ public class ArtistPayment {
     private Set<ArtistBill> artistBills;
 
     @NotNull
-    @Min(value = 1)
+    @Positive
     private Long amount;
 
     public ArtistPayment(){}

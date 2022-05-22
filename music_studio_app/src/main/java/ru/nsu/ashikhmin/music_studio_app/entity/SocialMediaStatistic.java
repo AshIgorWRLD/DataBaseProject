@@ -1,0 +1,82 @@
+package ru.nsu.ashikhmin.music_studio_app.entity;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.util.Objects;
+
+@Entity
+@Table(name = "social_media_statistic")
+@Getter
+@Setter
+public class SocialMediaStatistic {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
+    @OneToOne (cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH})
+    @JoinColumn(name = "artist_or_group_id", referencedColumnName = "id")
+    private ArtistPage artistPage;
+
+    @NotNull
+    @NotBlank
+    @JsonProperty("social_network")
+    @Column(name = "social_network")
+    private String socialNetwork;
+
+    @NotNull
+    @Positive
+    @JsonProperty("subscribers_amount")
+    @Column(name = "subscribers_amount")
+    private Long subscribersAmount;
+
+    @NotNull
+    @Positive
+    @JsonProperty("live_subscribers")
+    @Column(name = "live_subscribers")
+    private Long liveSubscribers;
+
+    public SocialMediaStatistic(){}
+
+    public SocialMediaStatistic(ArtistPage artistPage, String socialNetwork,
+                                Long subscribersAmount, Long liveSubscribers) {
+        this.artistPage = artistPage;
+        this.socialNetwork = socialNetwork;
+        this.subscribersAmount = subscribersAmount;
+        this.liveSubscribers = liveSubscribers;
+    }
+
+    @Override
+    public String toString(){
+        return "\nSocialMediaStatistic{" + "id=" + this.id + ", artist_or_group_id=" +
+                this.artistPage + ", social_network=" + this.socialNetwork +
+                ", subscribers_amount=" + this.subscribersAmount +
+                ", live_subscribers=" + this.liveSubscribers +"}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o){
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)){
+            return false;
+        }
+        SocialMediaStatistic socialMediaStatistic = (SocialMediaStatistic) o;
+        return id != null && Objects.equals(id, socialMediaStatistic.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+}

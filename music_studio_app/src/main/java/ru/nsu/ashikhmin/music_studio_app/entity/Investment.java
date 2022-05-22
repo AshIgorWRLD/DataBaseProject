@@ -1,6 +1,7 @@
 package ru.nsu.ashikhmin.music_studio_app.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
@@ -8,6 +9,8 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,7 +32,7 @@ public class Investment {
     private Investor investor;
 
     @NotNull
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToMany (cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
             CascadeType.REFRESH})
     @JoinTable(name = "investments_info",
@@ -38,7 +41,7 @@ public class Investment {
     private Set<ArtistPage> recipients;
 
     @NotNull
-    @Min(value = 1)
+    @Positive
     private Long moneyAmount;
 
     public Investment(){}

@@ -1,0 +1,2 @@
+ALTER TABLE artist_distribution_cards ADD CONSTRAINT listen_watch_amount CHECK (listen_watch_amount >= 0);
+ALTER TABLE artist_distribution_cards ADD CONSTRAINT monthly_listeners CHECK (monthly_listeners >= 0);

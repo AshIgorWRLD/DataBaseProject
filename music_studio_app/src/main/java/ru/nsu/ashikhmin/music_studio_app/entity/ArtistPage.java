@@ -1,11 +1,12 @@
 package ru.nsu.ashikhmin.music_studio_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -27,6 +28,9 @@ public class ArtistPage {
             CascadeType.REFRESH})
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     private Group group;
+
+    @ManyToMany(mappedBy = "recipients")
+    private List<Investment> investments;
 
     @Override
     public String toString(){

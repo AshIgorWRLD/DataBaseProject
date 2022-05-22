@@ -1,0 +1,1 @@
+ALTER TABLE artist_payments ADD CONSTRAINT amount CHECK (amount > 100 AND amount < 99999999);
