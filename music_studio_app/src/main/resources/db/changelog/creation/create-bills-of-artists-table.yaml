@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-bills-of-artists-table
+      author: postgres
+      password: 123
+      changes:
+        - createTable:
+            tableName: bills_of_artists
+            columns:
+              - column:
+                  name: artist_payment_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: cboat_ap_id_ap_id
+                    references: artist_payments(id)
+                    deleteCascade: true
+              - column:
+                  name: artist_bill_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: cboat_ab_id_ab_id
+                    references: artist_bills(id)
+                    deleteCascade: true
