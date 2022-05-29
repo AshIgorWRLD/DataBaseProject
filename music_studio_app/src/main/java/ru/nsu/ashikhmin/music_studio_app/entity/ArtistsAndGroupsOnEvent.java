@@ -35,7 +35,6 @@ public class ArtistsAndGroupsOnEvent {
     private Event event;
 
     @NotNull
-    @JsonProperty("performance_time")
     @Column(name = "performance_time")
     private Time performanceTime;
 

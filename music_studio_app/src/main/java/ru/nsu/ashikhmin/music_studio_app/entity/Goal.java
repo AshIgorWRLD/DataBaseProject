@@ -34,7 +34,6 @@ public class Goal {
     private Progress progress;
 
     @NotNull
-    @JsonProperty("progress_percentage")
     @Column(name = "progress_percentage")
     private Double progressPercentage;
 

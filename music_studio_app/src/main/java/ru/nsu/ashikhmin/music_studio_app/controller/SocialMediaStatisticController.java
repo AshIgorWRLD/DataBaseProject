@@ -11,9 +11,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 import ru.nsu.ashikhmin.music_studio_app.entity.SocialMediaStatistic;
-import ru.nsu.ashikhmin.music_studio_app.entity.User;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.SocialMediaStatisticDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.SocialMediaStatisticInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.SocialMediaStatisticRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -64,16 +63,16 @@ public class SocialMediaStatisticController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового инвестора")
-    public ResponseEntity<SocialMediaStatistic> create(@Valid @RequestBody SocialMediaStatisticDataSource socialMediaStatisticDataSource){
+    public ResponseEntity<SocialMediaStatistic> create(@Valid @RequestBody SocialMediaStatisticInputDto socialMediaStatisticInputDto){
         log.info("request for creating socialMediaStatistic from data source {}",
-                socialMediaStatisticDataSource);
+                socialMediaStatisticInputDto);
         ResponseEntity<ArtistPage> artistPageControllerResponseEntity =
-                artistPageController.getOne(socialMediaStatisticDataSource.getArtistPageId());
+                artistPageController.getOne(socialMediaStatisticInputDto.getArtistPageId());
         SocialMediaStatistic socialMediaStatistic = new SocialMediaStatistic(
                 artistPageControllerResponseEntity.getBody(),
-                socialMediaStatisticDataSource.getSocialNetwork(),
-                socialMediaStatisticDataSource.getSubscribersAmount(),
-                socialMediaStatisticDataSource.getLiveSubscribers());
+                socialMediaStatisticInputDto.getSocialNetwork(),
+                socialMediaStatisticInputDto.getSubscribersAmount(),
+                socialMediaStatisticInputDto.getLiveSubscribers());
 
         log.info("request for creating socialMediaStatistic with parameters {}", socialMediaStatistic);
 
@@ -83,17 +82,17 @@ public class SocialMediaStatisticController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем инвесторе")
     public ResponseEntity<SocialMediaStatistic> update(@PathVariable("id") long id,
-                                           @Valid @RequestBody SocialMediaStatisticDataSource socialMediaStatisticDataSource){
+                                           @Valid @RequestBody SocialMediaStatisticInputDto socialMediaStatisticInputDto){
 
         log.info("request for updating socialMediaStatistic by id {} with parameters {}",
-                id, socialMediaStatisticDataSource);
+                id, socialMediaStatisticInputDto);
         ResponseEntity<ArtistPage> artistPageControllerResponseEntity =
-                artistPageController.getOne(socialMediaStatisticDataSource.getArtistPageId());
+                artistPageController.getOne(socialMediaStatisticInputDto.getArtistPageId());
         SocialMediaStatistic socialMediaStatistic = new SocialMediaStatistic(
                 artistPageControllerResponseEntity.getBody(),
-                socialMediaStatisticDataSource.getSocialNetwork(),
-                socialMediaStatisticDataSource.getSubscribersAmount(),
-                socialMediaStatisticDataSource.getLiveSubscribers());
+                socialMediaStatisticInputDto.getSocialNetwork(),
+                socialMediaStatisticInputDto.getSubscribersAmount(),
+                socialMediaStatisticInputDto.getLiveSubscribers());
         SocialMediaStatistic socialMediaStatisticFromDataBase = socialMediaStatisticRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found socialMediaStatistic with id = " + id));

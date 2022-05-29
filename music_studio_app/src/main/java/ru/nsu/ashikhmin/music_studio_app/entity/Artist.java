@@ -28,7 +28,7 @@ public class Artist {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
-    @JsonProperty("group_id")
+
     @Column(name = "group_id", insertable = false, updatable = false)
     private Long groupId;
 

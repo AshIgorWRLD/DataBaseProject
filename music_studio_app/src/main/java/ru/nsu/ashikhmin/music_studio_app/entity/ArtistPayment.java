@@ -30,7 +30,6 @@ public class ArtistPayment {
     @JoinColumn(name = "artist_id", referencedColumnName = "id")
     private Artist artist;
 
-    @JsonProperty("artist_bill_id")
     @Column(name = "artist_bill_id")
     private Long artistBillId;
 

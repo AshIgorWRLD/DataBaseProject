@@ -14,7 +14,7 @@ import ru.nsu.ashikhmin.music_studio_app.additionalmodels.WorkScheduleWithoutEmp
 import ru.nsu.ashikhmin.music_studio_app.entity.Employee;
 import ru.nsu.ashikhmin.music_studio_app.entity.WorkSchedule;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.WorkScheduleDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.WorkScheduleInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.WorkScheduleRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -87,13 +87,13 @@ public class WorkScheduleController{
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового расписания работников")
-    public ResponseEntity<WorkSchedule> create(@Valid @RequestBody WorkScheduleDataSource workScheduleDataSource){
-        log.info("request for creating workSchedule from data source {}", workScheduleDataSource);
+    public ResponseEntity<WorkSchedule> create(@Valid @RequestBody WorkScheduleInputDto workScheduleInputDto){
+        log.info("request for creating workSchedule from data source {}", workScheduleInputDto);
         ResponseEntity<Employee> employeeResponseEntity = employeeController.getOne(
-                workScheduleDataSource.getEmployeeId());
+                workScheduleInputDto.getEmployeeId());
         WorkSchedule workSchedule = new WorkSchedule(employeeResponseEntity.getBody(),
-                workScheduleDataSource.getWeekDay(), workScheduleDataSource.getTimeToCome(),
-                workScheduleDataSource.getWorkLength());
+                workScheduleInputDto.getWeekDay(), workScheduleInputDto.getTimeToCome(),
+                workScheduleInputDto.getWorkLength());
         log.info("request for creating workSchedule with parameters {}", workSchedule);
         return new ResponseEntity<>(workScheduleRepo.save(workSchedule), HttpStatus.OK);
     }
@@ -101,15 +101,15 @@ public class WorkScheduleController{
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем расписании работников")
     public ResponseEntity<WorkSchedule> update(@PathVariable("id") long id,
-                                                  @Valid @RequestBody WorkScheduleDataSource workScheduleDataSource){
+                                                  @Valid @RequestBody WorkScheduleInputDto workScheduleInputDto){
 
         log.info("request for updating workSchedule by id {} with parameters {}",
-                id, workScheduleDataSource);
+                id, workScheduleInputDto);
         ResponseEntity<Employee> employeeResponseEntity = employeeController.getOne(
-                workScheduleDataSource.getEmployeeId());
+                workScheduleInputDto.getEmployeeId());
         WorkSchedule workSchedule = new WorkSchedule(employeeResponseEntity.getBody(),
-                workScheduleDataSource.getWeekDay(), workScheduleDataSource.getTimeToCome(),
-                workScheduleDataSource.getWorkLength());
+                workScheduleInputDto.getWeekDay(), workScheduleInputDto.getTimeToCome(),
+                workScheduleInputDto.getWorkLength());
         WorkSchedule workScheduleFromDataBase = workScheduleRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found workSchedule with id = " + id));

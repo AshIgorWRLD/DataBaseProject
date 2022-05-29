@@ -30,7 +30,6 @@ public class EmployeePayment {
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
     private Employee employee;
 
-    @JsonProperty("employee_bill_id")
     @Column(name = "employee_bill_id")
     private Long employeeBillId;
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.Progress;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ProgressDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ProgressInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ProgressRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -62,18 +62,18 @@ public class ProgressController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой страницы исполнителя")
-    public ResponseEntity<Progress> create(@Valid @RequestBody ProgressDataSource progressDataSource){
+    public ResponseEntity<Progress> create(@Valid @RequestBody ProgressInputDto progressInputDto){
         log.info("request for creating progress from data source {}",
-                progressDataSource);
+                progressInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                progressDataSource.getArtistPageId());
+                progressInputDto.getArtistPageId());
         Progress progress = new Progress(
                 artistPageResponseEntity.getBody(),
-                progressDataSource.getSocialMediaCoefficient(),
-                progressDataSource.getAdvertisementCompaniesCoefficient(),
-                progressDataSource.getDistributionCoefficient(),
-                progressDataSource.getIncomesCoefficient(),
-                progressDataSource.getSupposedSuccessDate());
+                progressInputDto.getSocialMediaCoefficient(),
+                progressInputDto.getAdvertisementCompaniesCoefficient(),
+                progressInputDto.getDistributionCoefficient(),
+                progressInputDto.getIncomesCoefficient(),
+                progressInputDto.getSupposedSuccessDate());
 
         log.info("request for creating progress with parameters {}", progress);
 
@@ -83,19 +83,19 @@ public class ProgressController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей странице исполнителя")
     public ResponseEntity<Progress> update(@PathVariable("id") long id,
-                                                       @Valid @RequestBody ProgressDataSource progressDataSource){
+                                                       @Valid @RequestBody ProgressInputDto progressInputDto){
 
         log.info("request for updating progress by id {} with parameters {}",
-                id, progressDataSource);
+                id, progressInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                progressDataSource.getArtistPageId());
+                progressInputDto.getArtistPageId());
         Progress progress = new Progress(
                 artistPageResponseEntity.getBody(),
-                progressDataSource.getSocialMediaCoefficient(),
-                progressDataSource.getAdvertisementCompaniesCoefficient(),
-                progressDataSource.getDistributionCoefficient(),
-                progressDataSource.getIncomesCoefficient(),
-                progressDataSource.getSupposedSuccessDate());
+                progressInputDto.getSocialMediaCoefficient(),
+                progressInputDto.getAdvertisementCompaniesCoefficient(),
+                progressInputDto.getDistributionCoefficient(),
+                progressInputDto.getIncomesCoefficient(),
+                progressInputDto.getSupposedSuccessDate());
         Progress progressFromDataBase = progressRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found progress with id = " + id));

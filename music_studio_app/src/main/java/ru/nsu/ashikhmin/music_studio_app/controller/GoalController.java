@@ -13,7 +13,7 @@ import ru.nsu.ashikhmin.music_studio_app.entity.Goal;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 import ru.nsu.ashikhmin.music_studio_app.entity.Progress;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.GoalDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.GoalInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.GoalRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -66,21 +66,21 @@ public class GoalController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой страницы исполнителя")
-    public ResponseEntity<Goal> create(@Valid @RequestBody GoalDataSource goalDataSource){
+    public ResponseEntity<Goal> create(@Valid @RequestBody GoalInputDto goalInputDto){
         log.info("request for creating goal from data source {}",
-                goalDataSource);
+                goalInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                goalDataSource.getArtistPageId());
+                goalInputDto.getArtistPageId());
         ResponseEntity<Progress> progressResponseEntity = progressController.getOne(
-                goalDataSource.getProgressId());
+                goalInputDto.getProgressId());
         Goal goal = new Goal(
                 artistPageResponseEntity.getBody(),
                 progressResponseEntity.getBody(),
-                goalDataSource.getProgressPercentage(),
-                goalDataSource.getStatement(),
-                goalDataSource.getType(),
-                goalDataSource.getDeadline(),
-                goalDataSource.getResources());
+                goalInputDto.getProgressPercentage(),
+                goalInputDto.getStatement(),
+                goalInputDto.getType(),
+                goalInputDto.getDeadline(),
+                goalInputDto.getResources());
 
         log.info("request for creating goal with parameters {}", goal);
 
@@ -90,22 +90,22 @@ public class GoalController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей странице исполнителя")
     public ResponseEntity<Goal> update(@PathVariable("id") long id,
-                                                       @Valid @RequestBody GoalDataSource goalDataSource){
+                                                       @Valid @RequestBody GoalInputDto goalInputDto){
 
         log.info("request for updating goal by id {} with parameters {}",
-                id, goalDataSource);
+                id, goalInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                goalDataSource.getArtistPageId());
+                goalInputDto.getArtistPageId());
         ResponseEntity<Progress> progressResponseEntity = progressController.getOne(
-                goalDataSource.getProgressId());
+                goalInputDto.getProgressId());
         Goal goal = new Goal(
                 artistPageResponseEntity.getBody(),
                 progressResponseEntity.getBody(),
-                goalDataSource.getProgressPercentage(),
-                goalDataSource.getStatement(),
-                goalDataSource.getType(),
-                goalDataSource.getDeadline(),
-                goalDataSource.getResources());
+                goalInputDto.getProgressPercentage(),
+                goalInputDto.getStatement(),
+                goalInputDto.getType(),
+                goalInputDto.getDeadline(),
+                goalInputDto.getResources());
         Goal goalFromDataBase = goalRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found goal with id = " + id));

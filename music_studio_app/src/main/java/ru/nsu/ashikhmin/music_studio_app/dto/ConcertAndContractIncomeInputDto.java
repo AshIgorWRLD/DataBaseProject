@@ -1,6 +1,5 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -10,12 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ConcertAndContractIncomeDataSource {
-    @JsonProperty("artist_or_group_id")
+public class ConcertAndContractIncomeInputDto {
     private Long artistOrGroupId;
     private String type;
     private String name;
-    @JsonProperty("money_amount")
     private Long moneyAmount;
 
     @Override

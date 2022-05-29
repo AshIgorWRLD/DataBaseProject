@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.*;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.InvestmentDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.InvestmentInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.InvestmentRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -67,19 +67,19 @@ public class InvestmentController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой инвестиции")
-    public ResponseEntity<Investment> create(@Valid @RequestBody InvestmentDataSource investmentDataSource){
-        log.info("request for creating investment from data source {}", investmentDataSource);
+    public ResponseEntity<Investment> create(@Valid @RequestBody InvestmentInputDto investmentInputDto){
+        log.info("request for creating investment from data source {}", investmentInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                investmentDataSource.getRecipientId());
+                investmentInputDto.getRecipientId());
         ResponseEntity<Investor> investorResponseEntity = investorController.getOne(
-                investmentDataSource.getInvestorId());
+                investmentInputDto.getInvestorId());
         ArtistPage recipient = artistPageResponseEntity.getBody();
         log.info("recipient {}", recipient);
         Set<ArtistPage> set = new HashSet<>();
         set.add(recipient);
         set.forEach(x->log.info("set {}", x));
         Investment investment = new Investment(investorResponseEntity.getBody(),
-                set, investmentDataSource.getMoneyAmount());
+                set, investmentInputDto.getMoneyAmount());
         log.info("request for creating investment with parameters {}", investment);
         return new ResponseEntity<>(investmentRepo.save(investment), HttpStatus.OK);
     }
@@ -87,18 +87,18 @@ public class InvestmentController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей инвестиции")
     public ResponseEntity<Investment> update(@PathVariable("id") long id,
-                                                  @Valid @RequestBody InvestmentDataSource investmentDataSource){
+                                                  @Valid @RequestBody InvestmentInputDto investmentInputDto){
 
         log.info("request for updating investment by id {} with parameters {}",
-                id, investmentDataSource);
-        log.info("request for creating investment from data source {}", investmentDataSource);
+                id, investmentInputDto);
+        log.info("request for creating investment from data source {}", investmentInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                investmentDataSource.getRecipientId());
+                investmentInputDto.getRecipientId());
         ResponseEntity<Investor> investorResponseEntity = investorController.getOne(
-                investmentDataSource.getInvestorId());
+                investmentInputDto.getInvestorId());
         ArtistPage recipient = artistPageResponseEntity.getBody();
         Investment investment = new Investment(investorResponseEntity.getBody(),
-                null, investmentDataSource.getMoneyAmount());
+                null, investmentInputDto.getMoneyAmount());
         Investment investmentFromDataBase = investmentRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found investment with id = " + id));

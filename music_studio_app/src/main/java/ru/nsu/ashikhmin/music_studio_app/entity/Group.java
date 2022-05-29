@@ -31,7 +31,6 @@ public class Group {
 
     @NotNull
     @Column(name = "creation_date")
-    @JsonProperty("creation_date")
     private Date creationDate;
 
     @JsonManagedReference

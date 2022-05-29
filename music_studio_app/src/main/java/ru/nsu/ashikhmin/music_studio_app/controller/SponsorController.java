@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.Event;
 import ru.nsu.ashikhmin.music_studio_app.entity.Sponsor;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.SponsorDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.SponsorInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.SponsorRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -62,13 +62,13 @@ public class SponsorController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового инвестора")
-    public ResponseEntity<Sponsor> create(@Valid @RequestBody SponsorDataSource sponsorDataSource){
-        log.info("request for creating sponsor from data source {}", sponsorDataSource);
+    public ResponseEntity<Sponsor> create(@Valid @RequestBody SponsorInputDto sponsorInputDto){
+        log.info("request for creating sponsor from data source {}", sponsorInputDto);
         ResponseEntity<Event> eventResponseEntity = eventController.getOne(
-                sponsorDataSource.getEventId());
+                sponsorInputDto.getEventId());
         Sponsor sponsor = new Sponsor(eventResponseEntity.getBody(),
-                sponsorDataSource.getName(), sponsorDataSource.getBusinessType(),
-                sponsorDataSource.getSponsoredMoney());
+                sponsorInputDto.getName(), sponsorInputDto.getBusinessType(),
+                sponsorInputDto.getSponsoredMoney());
 
         log.info("request for creating sponsor with parameters {}", sponsor);
 
@@ -78,15 +78,15 @@ public class SponsorController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем инвесторе")
     public ResponseEntity<Sponsor> update(@PathVariable("id") long id,
-                                           @Valid @RequestBody SponsorDataSource sponsorDataSource){
+                                           @Valid @RequestBody SponsorInputDto sponsorInputDto){
 
         log.info("request for updating sponsor by id {} with parameters {}",
-                id, sponsorDataSource);
+                id, sponsorInputDto);
         ResponseEntity<Event> eventResponseEntity = eventController.getOne(
-                sponsorDataSource.getEventId());
+                sponsorInputDto.getEventId());
         Sponsor sponsor = new Sponsor(eventResponseEntity.getBody(),
-                sponsorDataSource.getName(), sponsorDataSource.getBusinessType(),
-                sponsorDataSource.getSponsoredMoney());
+                sponsorInputDto.getName(), sponsorInputDto.getBusinessType(),
+                sponsorInputDto.getSponsoredMoney());
         Sponsor sponsorFromDataBase = sponsorRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found sponsor with id = " + id));

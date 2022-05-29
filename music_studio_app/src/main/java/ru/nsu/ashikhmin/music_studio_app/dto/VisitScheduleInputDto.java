@@ -1,6 +1,5 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -13,14 +12,11 @@ import java.sql.Time;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VisitScheduleDataSource {
+public class VisitScheduleInputDto {
 
-    @JsonProperty("client_id")
     private Long clientId;
-    @JsonProperty("visit_date")
     private Date visitDate;
     private Time timing;
-    @JsonProperty("length_of_visit")
     private Integer lengthOfVisit;
     private String type;
 

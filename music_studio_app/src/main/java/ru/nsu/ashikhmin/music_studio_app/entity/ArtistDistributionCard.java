@@ -1,6 +1,6 @@
 package ru.nsu.ashikhmin.music_studio_app.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "artist_distribution_cards")
@@ -22,33 +21,35 @@ public class ArtistDistributionCard {
     private Long id;
 
     @NotNull
-    @OneToOne (cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
-    @JoinColumn(name = "artist_or_group_id", referencedColumnName = "id")
-    private ArtistPage artistPage;
+    @Column(name = "artist_or_group_id",  insertable = false, updatable = false)
+    private Long artistOrGroupId;
+
+    @JsonBackReference
+    @NotNull
+    @ManyToOne
+    private ArtistPage artistOrGroup;
 
     @NotNull
-    @JsonManagedReference
-    @OneToMany(mappedBy = "distributionCard", cascade = {CascadeType.DETACH, CascadeType.MERGE,
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
-    private Set<DistributionService> distributionServices;
+    @JoinColumn(name = "distribution_service_id", referencedColumnName = "id")
+    private DistributionService distributionService;
 
-    @JsonProperty("listen_watch_amount")
     @Column(name = "listen_watch_amount")
     @Positive
     private Long listenWatchAmount;
 
-    @JsonProperty("monthly_listeners")
     @Column(name = "monthly_listeners")
     @Positive
     private Long monthlyListeners;
 
     public ArtistDistributionCard(){}
 
-    public ArtistDistributionCard(ArtistPage artistPage, Set<DistributionService> distributionServices,
+    public ArtistDistributionCard(ArtistPage artistPage, DistributionService distributionService,
                                   Long listenWatchAmount, Long monthlyListeners) {
-        this.artistPage = artistPage;
-        this.distributionServices = distributionServices;
+        this.artistOrGroup = artistPage;
+        this.artistOrGroupId = artistPage.getId();
+        this.distributionService = distributionService;
         this.listenWatchAmount = listenWatchAmount;
         this.monthlyListeners = monthlyListeners;
     }
@@ -56,7 +57,7 @@ public class ArtistDistributionCard {
     @Override
     public String toString(){
         return "\nArtistDistributionCard{" + "id=" + this.id + ", artist_or_group=" +
-                this.artistPage + ", distribution_services=" + this.distributionServices +
+                this.artistOrGroup + ", distribution_services=" + this.distributionService +
                 ", listen_watch_amount=" + this.listenWatchAmount +
                 ", monthly_listeners=" + this.monthlyListeners +"}";
     }

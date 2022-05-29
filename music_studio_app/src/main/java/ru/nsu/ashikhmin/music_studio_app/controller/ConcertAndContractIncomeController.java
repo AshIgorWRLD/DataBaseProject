@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 import ru.nsu.ashikhmin.music_studio_app.entity.ConcertAndContractIncome;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ConcertAndContractIncomeDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ConcertAndContractIncomeInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ConcertAndContractIncomeRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -65,7 +65,7 @@ public class ConcertAndContractIncomeController {
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового дохода с концерта или контракта")
     public ResponseEntity<ConcertAndContractIncome> create(
-            @Valid @RequestBody ConcertAndContractIncomeDataSource concertAndContractIncomeDataSource){
+            @Valid @RequestBody ConcertAndContractIncomeInputDto concertAndContractIncomeDataSource){
         log.info("request for creating concertAndContractIncome from data source {}", concertAndContractIncomeDataSource);
         ResponseEntity<ArtistPage> artistPageResponseEntity =
                 artistPageController.getOne(
@@ -82,7 +82,7 @@ public class ConcertAndContractIncomeController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем доходе с концерта или контракта")
     public ResponseEntity<ConcertAndContractIncome> update(@PathVariable("id") long id,
-                                         @Valid @RequestBody ConcertAndContractIncomeDataSource concertAndContractIncomeDataSource){
+                                         @Valid @RequestBody ConcertAndContractIncomeInputDto concertAndContractIncomeDataSource){
 
         log.info("request for updating concertAndContractIncome by id {} with parameters {}",
                 id, concertAndContractIncomeDataSource);

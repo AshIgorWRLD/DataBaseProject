@@ -13,7 +13,7 @@ import ru.nsu.ashikhmin.music_studio_app.entity.Artist;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 import ru.nsu.ashikhmin.music_studio_app.entity.Group;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ArtistPageDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ArtistPageInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ArtistPageRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -67,16 +67,16 @@ public class ArtistPageController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой страницы исполнителя")
-    public ResponseEntity<ArtistPage> create(@Valid @RequestBody ArtistPageDataSource artistPageDataSource){
-        log.info("request for creating artistPage from data source {}", artistPageDataSource);
+    public ResponseEntity<ArtistPage> create(@Valid @RequestBody ArtistPageInputDto artistPageInputDto){
+        log.info("request for creating artistPage from data source {}", artistPageInputDto);
         ArtistPage artistPage;
-        if(artistPageDataSource.getGroupId() == null){
+        if(artistPageInputDto.getGroupId() == null){
             ResponseEntity<Artist> artistResponseEntity = artistController.getOne(
-                    artistPageDataSource.getArtistId());
+                    artistPageInputDto.getArtistId());
             artistPage = new ArtistPage(artistResponseEntity.getBody());
         }else {
             ResponseEntity<Group> groupResponseEntity = groupController.getOne(
-                    artistPageDataSource.getGroupId());
+                    artistPageInputDto.getGroupId());
             artistPage = new ArtistPage(groupResponseEntity.getBody());
         }
         log.info("request for creating artistPage with parameters {}", artistPage);
@@ -87,18 +87,18 @@ public class ArtistPageController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей странице исполнителя")
     public ResponseEntity<ArtistPage> update(@PathVariable("id") long id,
-                                         @Valid @RequestBody ArtistPageDataSource artistPageDataSource){
+                                         @Valid @RequestBody ArtistPageInputDto artistPageInputDto){
 
         log.info("request for updating artistPage by id {} with parameters {}",
-                id, artistPageDataSource);
+                id, artistPageInputDto);
         ArtistPage artistPage;
-        if(artistPageDataSource.getGroupId() == null){
+        if(artistPageInputDto.getGroupId() == null){
             ResponseEntity<Artist> artistResponseEntity = artistController.getOne(
-                    artistPageDataSource.getArtistId());
+                    artistPageInputDto.getArtistId());
             artistPage = new ArtistPage(artistResponseEntity.getBody());
         }else {
             ResponseEntity<Group> groupResponseEntity = groupController.getOne(
-                    artistPageDataSource.getGroupId());
+                    artistPageInputDto.getGroupId());
             artistPage = new ArtistPage(groupResponseEntity.getBody());
         }
 

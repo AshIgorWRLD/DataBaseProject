@@ -13,7 +13,7 @@ import ru.nsu.ashikhmin.music_studio_app.entity.Artist;
 import ru.nsu.ashikhmin.music_studio_app.entity.Client;
 import ru.nsu.ashikhmin.music_studio_app.entity.Group;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ArtistDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ArtistInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ArtistRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -65,16 +65,16 @@ public class ArtistController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового исполнителя")
-    public ResponseEntity<Artist> create(@Valid @RequestBody ArtistDataSource artistDataSource){
-        log.info("request for creating artist from data source {}", artistDataSource);
+    public ResponseEntity<Artist> create(@Valid @RequestBody ArtistInputDto artistInputDto){
+        log.info("request for creating artist from data source {}", artistInputDto);
         ResponseEntity<Client> clientResponseEntity = clientController.getOne(
-                artistDataSource.getClientId());
+                artistInputDto.getClientId());
         ResponseEntity<Group> groupResponseEntity = groupController.getOne(
-                artistDataSource.getGroupId());
+                artistInputDto.getGroupId());
         Group group = groupResponseEntity.getBody();
         Artist artist = new Artist(clientResponseEntity.getBody(),
-                group, artistDataSource.getStageName(),
-                artistDataSource.getGenre(), artistDataSource.getCreationDate());
+                group, artistInputDto.getStageName(),
+                artistInputDto.getGenre(), artistInputDto.getCreationDate());
         artist.setGroupId(group.getId());
         log.info("request for creating artist with parameters {}", artist);
         return new ResponseEntity<>(artistRepo.save(artist), HttpStatus.OK);
@@ -83,18 +83,18 @@ public class ArtistController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем исполнителе")
     public ResponseEntity<Artist> update(@PathVariable("id") long id,
-                                         @Valid @RequestBody ArtistDataSource artistDataSource){
+                                         @Valid @RequestBody ArtistInputDto artistInputDto){
 
         log.info("request for updating artist by id {} with parameters {}",
-                id, artistDataSource);
+                id, artistInputDto);
         ResponseEntity<Client> clientResponseEntity = clientController.getOne(
-                artistDataSource.getClientId());
+                artistInputDto.getClientId());
         ResponseEntity<Group> groupResponseEntity = groupController.getOne(
-                artistDataSource.getGroupId());
+                artistInputDto.getGroupId());
         Group group = groupResponseEntity.getBody();
         Artist artist = new Artist(clientResponseEntity.getBody(),
-                group, artistDataSource.getStageName(),
-                artistDataSource.getGenre(), artistDataSource.getCreationDate());
+                group, artistInputDto.getStageName(),
+                artistInputDto.getGenre(), artistInputDto.getCreationDate());
         artist.setGroupId(group.getId());
         Artist artistFromDataBase = artistRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(

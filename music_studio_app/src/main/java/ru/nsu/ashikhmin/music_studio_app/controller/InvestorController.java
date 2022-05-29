@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.Investor;
 import ru.nsu.ashikhmin.music_studio_app.entity.User;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.InvestorDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.InvestorInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.InvestorRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -62,11 +62,11 @@ public class InvestorController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового инвестора")
-    public ResponseEntity<Investor> create(@Valid @RequestBody InvestorDataSource investorDataSource){
-        log.info("request for creating investor from data source {}", investorDataSource);
-        ResponseEntity<User> userResponseEntity = userController.getOne(investorDataSource.getUserId());
+    public ResponseEntity<Investor> create(@Valid @RequestBody InvestorInputDto investorInputDto){
+        log.info("request for creating investor from data source {}", investorInputDto);
+        ResponseEntity<User> userResponseEntity = userController.getOne(investorInputDto.getUserId());
         Investor investor = new Investor(userResponseEntity.getBody(),
-                investorDataSource.getInvestedMoney(), investorDataSource.getBusinessPart());
+                investorInputDto.getInvestedMoney(), investorInputDto.getBusinessPart());
 
         log.info("request for creating investor with parameters {}", investor);
 
@@ -76,13 +76,13 @@ public class InvestorController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем инвесторе")
     public ResponseEntity<Investor> update(@PathVariable("id") long id,
-                                           @Valid @RequestBody InvestorDataSource investorDataSource){
+                                           @Valid @RequestBody InvestorInputDto investorInputDto){
 
         log.info("request for updating investor by id {} with parameters {}",
-                id, investorDataSource);
-        ResponseEntity<User> userResponseEntity = userController.getOne(investorDataSource.getUserId());
+                id, investorInputDto);
+        ResponseEntity<User> userResponseEntity = userController.getOne(investorInputDto.getUserId());
         Investor investor = new Investor(userResponseEntity.getBody(),
-                investorDataSource.getInvestedMoney(), investorDataSource.getBusinessPart());
+                investorInputDto.getInvestedMoney(), investorInputDto.getBusinessPart());
 
         Investor investorFromDataBase = investorRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(

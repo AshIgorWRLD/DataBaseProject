@@ -36,24 +36,12 @@ public class DistributionService {
     @Positive
     private Double listenWatchCost;
 
-    @JsonBackReference
-    @ManyToOne()
-    private ArtistDistributionCard distributionCard;
-
     public DistributionService(){}
 
     public DistributionService(String name, String type, Double listenWatchCost) {
         this.name = name;
         this.type = type;
         this.listenWatchCost = listenWatchCost;
-    }
-
-    public DistributionService(String name, String type, Double listenWatchCost,
-                               ArtistDistributionCard distributionCard) {
-        this.name = name;
-        this.type = type;
-        this.listenWatchCost = listenWatchCost;
-        this.distributionCard = distributionCard;
     }
 
     @Override

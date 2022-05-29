@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistsAndGroupsOnEvent;
 import ru.nsu.ashikhmin.music_studio_app.entity.Event;
-import ru.nsu.ashikhmin.music_studio_app.entity.Progress;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ArtistsAndGroupsOnEventDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ArtistsAndGroupsOnEventInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ArtistsAndGroupsOnEventRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -68,18 +67,18 @@ public class ArtistsAndGroupsOnEventController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой страницы исполнителя")
-    public ResponseEntity<ArtistsAndGroupsOnEvent> create(@Valid @RequestBody ArtistsAndGroupsOnEventDataSource artistsAndGroupsOnEventDataSource){
+    public ResponseEntity<ArtistsAndGroupsOnEvent> create(@Valid @RequestBody ArtistsAndGroupsOnEventInputDto artistsAndGroupsOnEventInputDto){
         log.info("request for creating artistsAndGroupsOnEvent from data source {}",
-                artistsAndGroupsOnEventDataSource);
+                artistsAndGroupsOnEventInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                artistsAndGroupsOnEventDataSource.getArtistPageId());
+                artistsAndGroupsOnEventInputDto.getArtistPageId());
         ResponseEntity<Event> eventResponseEntity = eventController.getOne(
-                artistsAndGroupsOnEventDataSource.getEventId());
+                artistsAndGroupsOnEventInputDto.getEventId());
         ArtistsAndGroupsOnEvent artistsAndGroupsOnEvent = new ArtistsAndGroupsOnEvent(
                 artistPageResponseEntity.getBody(),
                 eventResponseEntity.getBody(),
-                artistsAndGroupsOnEventDataSource.getPerformanceTime(),
-                artistsAndGroupsOnEventDataSource.getIncome());
+                artistsAndGroupsOnEventInputDto.getPerformanceTime(),
+                artistsAndGroupsOnEventInputDto.getIncome());
 
         log.info("request for creating artistsAndGroupsOnEvent with parameters {}", artistsAndGroupsOnEvent);
 
@@ -89,19 +88,19 @@ public class ArtistsAndGroupsOnEventController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей странице исполнителя")
     public ResponseEntity<ArtistsAndGroupsOnEvent> update(@PathVariable("id") long id,
-                                       @Valid @RequestBody ArtistsAndGroupsOnEventDataSource artistsAndGroupsOnEventDataSource){
+                                       @Valid @RequestBody ArtistsAndGroupsOnEventInputDto artistsAndGroupsOnEventInputDto){
 
         log.info("request for updating artistsAndGroupsOnEvent by id {} with parameters {}",
-                id, artistsAndGroupsOnEventDataSource);
+                id, artistsAndGroupsOnEventInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                artistsAndGroupsOnEventDataSource.getArtistPageId());
+                artistsAndGroupsOnEventInputDto.getArtistPageId());
         ResponseEntity<Event> eventResponseEntity = eventController.getOne(
-                artistsAndGroupsOnEventDataSource.getEventId());
+                artistsAndGroupsOnEventInputDto.getEventId());
         ArtistsAndGroupsOnEvent artistsAndGroupsOnEvent = new ArtistsAndGroupsOnEvent(
                 artistPageResponseEntity.getBody(),
                 eventResponseEntity.getBody(),
-                artistsAndGroupsOnEventDataSource.getPerformanceTime(),
-                artistsAndGroupsOnEventDataSource.getIncome());
+                artistsAndGroupsOnEventInputDto.getPerformanceTime(),
+                artistsAndGroupsOnEventInputDto.getIncome());
         ArtistsAndGroupsOnEvent artistsAndGroupsOnEventFromDataBase = artistsAndGroupsOnEventRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found artistsAndGroupsOnEvent with id = " + id));

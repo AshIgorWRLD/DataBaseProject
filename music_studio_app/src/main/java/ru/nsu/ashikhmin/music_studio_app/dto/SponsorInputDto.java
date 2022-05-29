@@ -1,6 +1,5 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
@@ -8,13 +7,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SponsorDataSource {
-    @JsonProperty("event_id")
+public class SponsorInputDto {
     private Long eventId;
     private String name;
-    @JsonProperty("business_type")
     private String businessType;
-    @JsonProperty("sponsored_money")
     private Long sponsoredMoney;
 
     @Override

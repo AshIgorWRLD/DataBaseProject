@@ -25,12 +25,10 @@ public class InvestorBill {
     private Long id;
 
     @NotNull
-    @JsonProperty("pay_day")
     @Column(name = "pay_day")
     private Date payDay;
 
     @NotNull
-    @JsonProperty("month_to_work")
     @Column(name = "month_to_work")
     private Integer monthToWork;
 
