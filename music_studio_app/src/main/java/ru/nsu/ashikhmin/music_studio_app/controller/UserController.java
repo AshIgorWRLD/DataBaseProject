@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,9 +37,10 @@ public class UserController{
 
     @GetMapping
     @ApiOperation("Получение списка пользователей")
-    public ResponseEntity<List<User>> list(){
+    public ResponseEntity<Page<User>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable){
         log.info("request for getting all users");
-        List<User> users = userRepo.findAll();
+        Page<User> users = userRepo.findAll(pageable);
         if(users.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

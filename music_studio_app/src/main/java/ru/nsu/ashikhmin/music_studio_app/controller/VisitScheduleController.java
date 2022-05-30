@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -48,9 +52,11 @@ public class VisitScheduleController {
 
     @GetMapping
     @ApiOperation("Получение списка расписаний работников")
-    public ResponseEntity<List<VisitSchedule>> list() {
+    public ResponseEntity<Page<VisitSchedule>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ) {
         log.info("request for getting all visitSchedules");
-        List<VisitSchedule> visitSchedules = visitScheduleRepo.findAll();
+        Page<VisitSchedule> visitSchedules = visitScheduleRepo.findAll(pageable);
         if (visitSchedules.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -93,7 +99,8 @@ public class VisitScheduleController {
 
     @PostMapping("custom")
     @ApiOperation("получение расписания работников по выбору")
-    public ResponseEntity<List<CustomVisitOutDto>> getCustomVisitTime(@Valid @RequestBody CustomVisitInputDto customVisitInputDto) {
+    public ResponseEntity<List<CustomVisitOutDto>> getCustomVisitTime(
+            @Valid @RequestBody CustomVisitInputDto customVisitInputDto) {
         log.info("request for filtering visit schedule with values: {}", customVisitInputDto);
 
         StringBuilder sqlRequest = new StringBuilder();

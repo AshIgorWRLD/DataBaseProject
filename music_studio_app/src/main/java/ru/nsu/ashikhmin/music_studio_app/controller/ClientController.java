@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -38,9 +42,11 @@ public class ClientController {
 
     @GetMapping
     @ApiOperation("Получение списка клиентов")
-    public ResponseEntity<List<Client>> list(){
+    public ResponseEntity<Page<Client>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all clients");
-        List<Client> clients = clientRepo.findAll();
+        Page<Client> clients = clientRepo.findAll(pageable);
         if(clients.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

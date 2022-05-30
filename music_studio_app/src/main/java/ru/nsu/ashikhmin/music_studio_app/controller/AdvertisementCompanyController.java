@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -39,9 +43,11 @@ public class AdvertisementCompanyController {
 
     @GetMapping
     @ApiOperation("Получение списка страниц исполнителей")
-    public ResponseEntity<List<AdvertisementCompany>> list(){
+    public ResponseEntity<Page<AdvertisementCompany>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all advertisementCompanys");
-        List<AdvertisementCompany> advertisementCompanys = advertisementCompanyRepo.findAll();
+        Page<AdvertisementCompany> advertisementCompanys = advertisementCompanyRepo.findAll(pageable);
         if(advertisementCompanys.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

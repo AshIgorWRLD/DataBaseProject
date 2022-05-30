@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -43,9 +47,11 @@ public class EmployeePaymentController {
 
     @GetMapping
     @ApiOperation("Получение списка выплат работникам")
-    public ResponseEntity<List<EmployeePayment>> list(){
+    public ResponseEntity<Page<EmployeePayment>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all employeePayments");
-        List<EmployeePayment> employeePayments = employeePaymentRepo.findAll();
+        Page<EmployeePayment> employeePayments = employeePaymentRepo.findAll(pageable);
         if(employeePayments.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

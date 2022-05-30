@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -41,9 +45,11 @@ public class ArtistController {
 
     @GetMapping
     @ApiOperation("Получение списка исполнителей")
-    public ResponseEntity<List<Artist>> list(){
+    public ResponseEntity<Page<Artist>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all artists");
-        List<Artist> artists = artistRepo.findAll();
+        Page<Artist> artists = artistRepo.findAll(pageable);
         if(artists.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
