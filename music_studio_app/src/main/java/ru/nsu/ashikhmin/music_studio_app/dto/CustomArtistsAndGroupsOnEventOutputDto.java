@@ -5,24 +5,19 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.sql.Timestamp;
 
-@Data
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomVisitOutDto {
+public class CustomArtistsAndGroupsOnEventOutputDto {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
-
-    private String name;
-    private Integer minLengthOfVisit;
-
-
-    @Override
-    public String toString(){
-        return "CustomVisitOutDto={" + "clientName=" + name + ", minLengthOfVisit=" + minLengthOfVisit + "}";
-    }
+    private String stageName;
+    private String eventName;
+    private Timestamp performanceTime;
+    private Long income;
 }

@@ -18,6 +18,7 @@ import ru.nsu.ashikhmin.music_studio_app.utils.SQLAdds;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -68,16 +69,16 @@ public class DistributionServiceController {
 
         StringBuilder sqlRequest = new StringBuilder();
 
-        sqlRequest.append(SQLAdds.SELECT)
-                .append(" * ")
-                .append(SQLAdds.FROM)
-                .append(" ")
-                .append(SQLAdds.DISTRIBUTION_SERVICE_TABLE)
-                .append(" ");
+        List<String> fields = new ArrayList<>();
+        fields.add("*");
 
+        List<String> fromTables = new ArrayList<>();
+        fromTables.add(SQLAdds.DISTRIBUTION_SERVICE_TABLE);
+
+        SQLAdds.addSelectLine(sqlRequest, fields);
+        SQLAdds.addFromLine(sqlRequest, fromTables);
         if(customDistributionServiceInputDto.isNotEmpty()){
             Boolean[] isNotFirst = new Boolean[1];
-            isNotFirst[0] = false;
             isNotFirst[0] = false;
             sqlRequest.append(SQLAdds.WHERE)
                     .append("(");
@@ -87,13 +88,17 @@ public class DistributionServiceController {
                     customDistributionServiceInputDto.isListenWatchCostAnd(),
                     customDistributionServiceInputDto.getLowestListenWatchCost(),
                     customDistributionServiceInputDto.getHighestListenWatchCost(),
-                    ".listen_watch_cost", SQLAdds.DISTRIBUTION_SERVICE_TABLE);
-            sqlRequest.append(");");
+                    "listen_watch_cost", SQLAdds.DISTRIBUTION_SERVICE_TABLE);
+            sqlRequest.append(")");
         }
+        sqlRequest.append(" ")
+                .append(SQLAdds.ORDER_BY)
+                .append(" id;");
 
-        List<DistributionService> services = entityManager.createNativeQuery(sqlRequest.toString(),
+        log.info("Filtration request: " + sqlRequest.toString());
+        List<DistributionService> out = entityManager.createNativeQuery(sqlRequest.toString(),
                         DistributionService.class).getResultList();
-        return new ResponseEntity<>(services, HttpStatus.OK);
+        return new ResponseEntity<>(out, HttpStatus.OK);
     }
 
     @PostMapping(consumes = {"*/*"})

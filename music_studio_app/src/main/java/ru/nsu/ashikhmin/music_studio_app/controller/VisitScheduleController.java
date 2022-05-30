@@ -98,36 +98,30 @@ public class VisitScheduleController {
 
         StringBuilder sqlRequest = new StringBuilder();
 
-        sqlRequest.append(SQLAdds.SELECT)
-                .append(" ")
-                .append(SQLAdds.USER_TABLE)
-                .append(".id, ")
-                .append(SQLAdds.USER_TABLE)
-                .append(".name, ")
-                .append(SQLAdds.MIN)
-                .append("(")
-                .append(SQLAdds.VISIT_SCHEDULE_TABLE)
-                .append(".length_of_visit) ")
-                .append(SQLAdds.AS)
-                .append(" \"min\" ")
-                .append(SQLAdds.FROM)
-                .append(" ")
-                .append(SQLAdds.USER_TABLE)
-                .append(" ");
-        SQLAdds.addInnerJoin(sqlRequest, SQLAdds.USER_TABLE, SQLAdds.CLIENT_TABLE, "id",
+        List<String> fields = new ArrayList<>();
+        fields.add(SQLAdds.USER_TABLE + ".id");
+        fields.add(SQLAdds.USER_TABLE + ".name");
+
+        List<String> fromTables = new ArrayList<>();
+        fromTables.add(SQLAdds.USER_TABLE);
+
+        SQLAdds.addSelectLine(sqlRequest, fields);
+        sqlRequest.append(", ");
+        SQLAdds.addAggregationFunction(sqlRequest, SQLAdds.MIN, SQLAdds.VISIT_SCHEDULE_TABLE,
+                "length_of_visit", "min_length_of_visit");
+
+        SQLAdds.addFromLine(sqlRequest, fromTables);
+        SQLAdds.addJoin(sqlRequest, SQLAdds.INNER_JOIN, SQLAdds.USER_TABLE, SQLAdds.CLIENT_TABLE, "id",
                 "user_id");
-        sqlRequest.append(" ");
-        SQLAdds.addInnerJoin(sqlRequest, SQLAdds.CLIENT_TABLE, SQLAdds.VISIT_SCHEDULE_TABLE, "id",
+        SQLAdds.addJoin(sqlRequest, SQLAdds.INNER_JOIN, SQLAdds.CLIENT_TABLE, SQLAdds.VISIT_SCHEDULE_TABLE, "id",
                 "client_id");
-        sqlRequest.append(SQLAdds.GROUP_BY)
-                .append(" ")
-                .append(SQLAdds.USER_TABLE)
-                .append(".id, ")
-                .append(SQLAdds.USER_TABLE)
-                .append(".name ");
+        SQLAdds.addGroupBy(sqlRequest, fields);
         customVisitInputDto.addHaving(sqlRequest);
-        sqlRequest.append(";");
-        System.out.println(sqlRequest.toString());
+        sqlRequest.append(" ")
+                .append(SQLAdds.ORDER_BY)
+                .append(" id;");
+
+        log.info("Group by and Having request: " + sqlRequest.toString());
         List<CustomVisitOutDto> out = entityManager.createNativeQuery(sqlRequest.toString(),
                 CustomVisitOutDto.class).getResultList();
         return new ResponseEntity<>(out, HttpStatus.OK);

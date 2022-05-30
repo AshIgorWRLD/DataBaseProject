@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/con_incomes")
+@RequestMapping("con_incomes")
 @Api(description = "Контроллер доходов с концертов и контрактов")
 public class ConcertAndContractIncomeController {
 
