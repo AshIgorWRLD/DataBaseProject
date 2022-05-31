@@ -1,8 +1,6 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 
 import java.sql.Date;
 
@@ -11,12 +9,9 @@ import java.sql.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GoalDataSource {
-    @JsonProperty("artist_or_group_id")
+public class GoalInputDto {
     private Long artistPageId;
-    @JsonProperty("progress_id")
     private Long progressId;
-    @JsonProperty("progress_percentage")
     private Double progressPercentage;
     private String statement;
     private String type;

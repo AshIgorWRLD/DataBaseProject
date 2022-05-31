@@ -5,20 +5,22 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.*;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ArtistDistributionCardDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ArtistDistributionCardInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ArtistDistributionCardRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
 import javax.validation.Valid;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Validated
@@ -43,9 +45,11 @@ public class ArtistDistributionCardController {
 
     @GetMapping
     @ApiOperation("Получение списка страниц исполнителей")
-    public ResponseEntity<List<ArtistDistributionCard>> list(){
+    public ResponseEntity<Page<ArtistDistributionCard>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all artistDistributionCards");
-        List<ArtistDistributionCard> artistDistributionCards = artistDistributionCardRepo.findAll();
+        Page<ArtistDistributionCard> artistDistributionCards = artistDistributionCardRepo.findAll(pageable);
         if(artistDistributionCards.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -67,17 +71,15 @@ public class ArtistDistributionCardController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой страницы исполнителя")
-    public ResponseEntity<ArtistDistributionCard> create(@Valid @RequestBody ArtistDistributionCardDataSource artistDistributionCardDataSource){
-        log.info("request for creating artistDistributionCard from data source {}", artistDistributionCardDataSource);
+    public ResponseEntity<ArtistDistributionCard> create(@Valid @RequestBody ArtistDistributionCardInputDto artistDistributionCardInputDto){
+        log.info("request for creating artistDistributionCard from data source {}", artistDistributionCardInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                artistDistributionCardDataSource.getArtistPageId());
+                artistDistributionCardInputDto.getArtistPageId());
         ResponseEntity<DistributionService> distributionServiceResponseEntity =
-                distributionServiceController.getOne(artistDistributionCardDataSource.getDistributionServiceId());
-        Set<DistributionService> set = new HashSet<>();
-        set.add(distributionServiceResponseEntity.getBody());
+                distributionServiceController.getOne(artistDistributionCardInputDto.getDistributionServiceId());
         ArtistDistributionCard artistDistributionCard = new ArtistDistributionCard(artistPageResponseEntity.getBody(),
-                set, artistDistributionCardDataSource.getListenWatchAmount(),
-                artistDistributionCardDataSource.getMonthlyListeners());
+                distributionServiceResponseEntity.getBody(), artistDistributionCardInputDto.getListenWatchAmount(),
+                artistDistributionCardInputDto.getMonthlyListeners());
 
         log.info("request for creating artistDistributionCard with parameters {}", artistDistributionCard);
 
@@ -87,22 +89,21 @@ public class ArtistDistributionCardController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей странице исполнителя")
     public ResponseEntity<ArtistDistributionCard> update(@PathVariable("id") long id,
-                                             @Valid @RequestBody ArtistDistributionCardDataSource artistDistributionCardDataSource){
+                                             @Valid @RequestBody ArtistDistributionCardInputDto artistDistributionCardInputDto){
 
         log.info("request for updating artistDistributionCard by id {} with parameters {}",
-                id, artistDistributionCardDataSource);
+                id, artistDistributionCardInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                artistDistributionCardDataSource.getArtistPageId());
+                artistDistributionCardInputDto.getArtistPageId());
         ResponseEntity<DistributionService> distributionServiceResponseEntity =
-                distributionServiceController.getOne(artistDistributionCardDataSource.getDistributionServiceId());
+                distributionServiceController.getOne(artistDistributionCardInputDto.getDistributionServiceId());
         ArtistDistributionCard artistDistributionCard = new ArtistDistributionCard(artistPageResponseEntity.getBody(),
-                null, artistDistributionCardDataSource.getListenWatchAmount(),
-                artistDistributionCardDataSource.getMonthlyListeners());
+                distributionServiceResponseEntity.getBody(), artistDistributionCardInputDto.getListenWatchAmount(),
+                artistDistributionCardInputDto.getMonthlyListeners());
         ArtistDistributionCard artistDistributionCardFromDataBase = artistDistributionCardRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found artistDistributionCard with id = " + id));
         log.info("ArtistDistributionCard from data base: " + artistDistributionCardFromDataBase);
-        artistDistributionCard.getDistributionServices().add(distributionServiceResponseEntity.getBody());
         BeanUtils.copyProperties(artistDistributionCard, artistDistributionCardFromDataBase,
                 NullProperty.getNullPropertiesString(artistDistributionCard));
         return new ResponseEntity<>(artistDistributionCardRepo.save(artistDistributionCardFromDataBase), HttpStatus.OK);

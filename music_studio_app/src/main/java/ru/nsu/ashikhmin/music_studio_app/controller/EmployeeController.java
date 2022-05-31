@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.Employee;
 import ru.nsu.ashikhmin.music_studio_app.entity.User;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.EmployeeDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.EmployeeInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.EmployeeRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -38,9 +42,11 @@ public class EmployeeController {
 
     @GetMapping
     @ApiOperation("Получение списка работников")
-    public ResponseEntity<List<Employee>> list(){
+    public ResponseEntity<Page<Employee>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all employees");
-        List<Employee> employees = employeeRepo.findAll();
+        Page<Employee> employees = employeeRepo.findAll(pageable);
         if(employees.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -62,7 +68,7 @@ public class EmployeeController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового работника")
-    public ResponseEntity<Employee> create(@Valid @RequestBody EmployeeDataSource employeeDataSource){
+    public ResponseEntity<Employee> create(@Valid @RequestBody EmployeeInputDto employeeDataSource){
         log.info("request for creating employee from data source {}", employeeDataSource);
         ResponseEntity<User> userResponseEntity = userController.getOne(employeeDataSource.getUserId());
         Employee employee = new Employee(userResponseEntity.getBody(),
@@ -76,7 +82,7 @@ public class EmployeeController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем работнике")
     public ResponseEntity<Employee> update(@PathVariable("id") long id,
-                                         @Valid @RequestBody EmployeeDataSource employeeDataSource){
+                                         @Valid @RequestBody EmployeeInputDto employeeDataSource){
 
         log.info("request for updating employee by id {} with parameters {}",
                 id, employeeDataSource);

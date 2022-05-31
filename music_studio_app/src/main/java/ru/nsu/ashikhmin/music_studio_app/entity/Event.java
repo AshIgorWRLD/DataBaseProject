@@ -25,12 +25,10 @@ public class Event {
 
     @NotNull
     @NotBlank
-    @JsonProperty("event_name")
     @Column(name = "event_name")
     private String eventName;
 
     @NotNull
-    @JsonProperty("audience_amount")
     @Column(name = "audience_amount")
     @Min(value = 10)
     private Integer audienceAmount;
@@ -40,7 +38,6 @@ public class Event {
     private String point;
 
     @NotNull
-    @JsonProperty("event_date")
     @Column(name = "event_date")
     private Date eventDate;
 
@@ -48,7 +45,6 @@ public class Event {
     private Time timing;
 
     @NotNull
-    @JsonProperty("event_rank")
     @Column(name = "event_rank")
     private Integer eventRank;
 

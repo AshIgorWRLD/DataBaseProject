@@ -1,6 +1,5 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
@@ -8,14 +7,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SocialMediaStatisticDataSource {
-    @JsonProperty("artist_or_group_id")
+public class SocialMediaStatisticInputDto {
     private Long artistPageId;
-    @JsonProperty("social_network")
     private String socialNetwork;
-    @JsonProperty("subscribers_amount")
     private Long subscribersAmount;
-    @JsonProperty("live_subscribers")
     private Long liveSubscribers;
 
     @Override

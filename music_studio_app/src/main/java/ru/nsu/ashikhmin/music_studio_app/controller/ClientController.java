@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.Client;
 import ru.nsu.ashikhmin.music_studio_app.entity.User;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ClientDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ClientInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ClientRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -38,9 +42,11 @@ public class ClientController {
 
     @GetMapping
     @ApiOperation("Получение списка клиентов")
-    public ResponseEntity<List<Client>> list(){
+    public ResponseEntity<Page<Client>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all clients");
-        List<Client> clients = clientRepo.findAll();
+        Page<Client> clients = clientRepo.findAll(pageable);
         if(clients.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -62,11 +68,11 @@ public class ClientController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового клиента")
-    public ResponseEntity<Client> create(@Valid @RequestBody ClientDataSource clientDataSource){
-        log.info("request for creating client from data source {}", clientDataSource);
-        ResponseEntity<User> userResponseEntity = userController.getOne(clientDataSource.getUserId());
+    public ResponseEntity<Client> create(@Valid @RequestBody ClientInputDto clientInputDto){
+        log.info("request for creating client from data source {}", clientInputDto);
+        ResponseEntity<User> userResponseEntity = userController.getOne(clientInputDto.getUserId());
         Client client = new Client(userResponseEntity.getBody(),
-                clientDataSource.getType());
+                clientInputDto.getType());
 
         log.info("request for creating client with parameters {}", client);
 
@@ -76,13 +82,13 @@ public class ClientController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем клиенте")
     public ResponseEntity<Client> update(@PathVariable("id") long id,
-                                           @Valid @RequestBody ClientDataSource clientDataSource){
+                                           @Valid @RequestBody ClientInputDto clientInputDto){
 
         log.info("request for updating client by id {} with parameters {}",
-                id, clientDataSource);
-        ResponseEntity<User> userResponseEntity = userController.getOne(clientDataSource.getUserId());
+                id, clientInputDto);
+        ResponseEntity<User> userResponseEntity = userController.getOne(clientInputDto.getUserId());
         Client client = new Client(userResponseEntity.getBody(),
-                clientDataSource.getType());
+                clientInputDto.getType());
 
         Client clientFromDataBase = clientRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(

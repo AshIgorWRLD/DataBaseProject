@@ -5,22 +5,23 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.AdvertisementCompany;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
-import ru.nsu.ashikhmin.music_studio_app.entity.DistributionService;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.AdvertisementCompanyDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.AdvertisementCompanyInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.AdvertisementCompanyRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
 import javax.validation.Valid;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Validated
@@ -42,9 +43,11 @@ public class AdvertisementCompanyController {
 
     @GetMapping
     @ApiOperation("Получение списка страниц исполнителей")
-    public ResponseEntity<List<AdvertisementCompany>> list(){
+    public ResponseEntity<Page<AdvertisementCompany>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all advertisementCompanys");
-        List<AdvertisementCompany> advertisementCompanys = advertisementCompanyRepo.findAll();
+        Page<AdvertisementCompany> advertisementCompanys = advertisementCompanyRepo.findAll(pageable);
         if(advertisementCompanys.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -66,19 +69,19 @@ public class AdvertisementCompanyController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой страницы исполнителя")
-    public ResponseEntity<AdvertisementCompany> create(@Valid @RequestBody AdvertisementCompanyDataSource advertisementCompanyDataSource){
+    public ResponseEntity<AdvertisementCompany> create(@Valid @RequestBody AdvertisementCompanyInputDto advertisementCompanyInputDto){
         log.info("request for creating advertisementCompany from data source {}",
-                advertisementCompanyDataSource);
+                advertisementCompanyInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                advertisementCompanyDataSource.getArtistPageId());
+                advertisementCompanyInputDto.getArtistPageId());
         AdvertisementCompany advertisementCompany = new AdvertisementCompany(
                 artistPageResponseEntity.getBody(),
-                advertisementCompanyDataSource.getAdvertisementCompanyName(),
-                advertisementCompanyDataSource.getStartDate(),
-                advertisementCompanyDataSource.getEndDate(),
-                advertisementCompanyDataSource.getAuditoryType(),
-                advertisementCompanyDataSource.getAdvertisementType(),
-                advertisementCompanyDataSource.getExpenses());
+                advertisementCompanyInputDto.getAdvertisementCompanyName(),
+                advertisementCompanyInputDto.getStartDate(),
+                advertisementCompanyInputDto.getEndDate(),
+                advertisementCompanyInputDto.getAuditoryType(),
+                advertisementCompanyInputDto.getAdvertisementType(),
+                advertisementCompanyInputDto.getExpenses());
 
         log.info("request for creating advertisementCompany with parameters {}", advertisementCompany);
 
@@ -88,20 +91,20 @@ public class AdvertisementCompanyController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей странице исполнителя")
     public ResponseEntity<AdvertisementCompany> update(@PathVariable("id") long id,
-                                                         @Valid @RequestBody AdvertisementCompanyDataSource advertisementCompanyDataSource){
+                                                         @Valid @RequestBody AdvertisementCompanyInputDto advertisementCompanyInputDto){
 
         log.info("request for updating advertisementCompany by id {} with parameters {}",
-                id, advertisementCompanyDataSource);
+                id, advertisementCompanyInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                advertisementCompanyDataSource.getArtistPageId());
+                advertisementCompanyInputDto.getArtistPageId());
         AdvertisementCompany advertisementCompany = new AdvertisementCompany(
                 artistPageResponseEntity.getBody(),
-                advertisementCompanyDataSource.getAdvertisementCompanyName(),
-                advertisementCompanyDataSource.getStartDate(),
-                advertisementCompanyDataSource.getEndDate(),
-                advertisementCompanyDataSource.getAuditoryType(),
-                advertisementCompanyDataSource.getAdvertisementType(),
-                advertisementCompanyDataSource.getExpenses());
+                advertisementCompanyInputDto.getAdvertisementCompanyName(),
+                advertisementCompanyInputDto.getStartDate(),
+                advertisementCompanyInputDto.getEndDate(),
+                advertisementCompanyInputDto.getAuditoryType(),
+                advertisementCompanyInputDto.getAdvertisementType(),
+                advertisementCompanyInputDto.getExpenses());
         AdvertisementCompany advertisementCompanyFromDataBase = advertisementCompanyRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found advertisementCompany with id = " + id));

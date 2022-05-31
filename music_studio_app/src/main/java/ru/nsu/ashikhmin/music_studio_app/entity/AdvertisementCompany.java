@@ -1,6 +1,5 @@
 package ru.nsu.ashikhmin.music_studio_app.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
@@ -28,29 +27,24 @@ public class AdvertisementCompany {
 
     @NotNull
     @NotBlank
-    @JsonProperty("advertisement_company_name")
     @Column(name = "advertisement_company_name")
     private String advertisementCompanyName;
 
     @NotNull
-    @JsonProperty("start_date")
     @Column(name = "start_date")
     private Date startDate;
 
     @NotNull
-    @JsonProperty("end_date")
     @Column(name = "end_date")
     private Date endDate;
 
     @NotNull
     @NotBlank
-    @JsonProperty("auditory_type")
     @Column(name = "auditory_type")
     private String auditoryType;
 
     @NotNull
     @NotBlank
-    @JsonProperty("advertisement_type")
     @Column(name = "advertisement_type")
     private String advertisementType;
 

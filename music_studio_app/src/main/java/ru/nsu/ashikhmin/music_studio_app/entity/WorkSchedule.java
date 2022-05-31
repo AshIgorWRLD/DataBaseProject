@@ -25,15 +25,12 @@ public class WorkSchedule {
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
     private Employee employee;
 
-    @JsonProperty("week_day")
     @Column(name = "week_day")
     private Integer weekDay;
 
-    @JsonProperty("time_to_come")
     @Column(name = "time_to_come")
     private Time timeToCome;
 
-    @JsonProperty("work_length")
     @Column(name = "work_length")
     private Integer workLength;
 

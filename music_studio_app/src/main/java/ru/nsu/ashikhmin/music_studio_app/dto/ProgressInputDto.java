@@ -1,6 +1,5 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.sql.Date;
@@ -10,18 +9,12 @@ import java.sql.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProgressDataSource {
-    @JsonProperty("artist_or_group_id")
+public class ProgressInputDto {
     private Long artistPageId;
-    @JsonProperty("social_media_coefficient")
     private Double socialMediaCoefficient;
-    @JsonProperty("advertisement_companies_coefficient")
     private Double advertisementCompaniesCoefficient;
-    @JsonProperty("distribution_coefficient")
     private Double distributionCoefficient;
-    @JsonProperty("incomes_coefficient")
     private Double incomesCoefficient;
-    @JsonProperty("supposed_success_date")
     private Date supposedSuccessDate;
 
     @Override

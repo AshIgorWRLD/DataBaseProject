@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +17,7 @@ import ru.nsu.ashikhmin.music_studio_app.entity.Artist;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistBill;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPayment;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ArtistPaymentDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ArtistPaymentInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ArtistPaymentRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -45,9 +49,11 @@ public class ArtistPaymentController {
 
     @GetMapping
     @ApiOperation("Получение списка выплат исполнителям")
-    public ResponseEntity<List<ArtistPayment>> list(){
+    public ResponseEntity<Page<ArtistPayment>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all artistPayments");
-        List<ArtistPayment> artistPayments = artistPaymentRepo.findAll();
+        Page<ArtistPayment> artistPayments = artistPaymentRepo.findAll(pageable);
         if(artistPayments.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -69,19 +75,19 @@ public class ArtistPaymentController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой выплаты исполнителю")
-    public ResponseEntity<ArtistPayment> create(@Valid @RequestBody ArtistPaymentDataSource artistPaymentDataSource){
-        log.info("request for creating artistPayment from data source {}", artistPaymentDataSource);
+    public ResponseEntity<ArtistPayment> create(@Valid @RequestBody ArtistPaymentInputDto artistPaymentInputDto){
+        log.info("request for creating artistPayment from data source {}", artistPaymentInputDto);
         ResponseEntity<Artist> artistResponseEntity = artistController.getOne(
-                artistPaymentDataSource.getArtistId());
+                artistPaymentInputDto.getArtistId());
         ResponseEntity<ArtistBill> artistBillResponseEntity = artistBillController.getOne(
-                artistPaymentDataSource.getArtistBillId());
+                artistPaymentInputDto.getArtistBillId());
         ArtistBill artistBill = artistBillResponseEntity.getBody();
         log.info("artist bill {}", artistBill);
         Set<ArtistBill> set = new HashSet<>();
         set.add(artistBill);
         set.forEach(x->log.info("set {}", x));
         ArtistPayment artistPayment = new ArtistPayment(artistResponseEntity.getBody(),
-                set, artistPaymentDataSource.getAmount());
+                set, artistPaymentInputDto.getAmount());
         artistPayment.setArtistBillId(artistBill.getId());
         log.info("request for creating artistPayment with parameters {}", artistPayment);
         return new ResponseEntity<>(artistPaymentRepo.save(artistPayment), HttpStatus.OK);
@@ -90,17 +96,17 @@ public class ArtistPaymentController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей выплате исполнителю")
     public ResponseEntity<ArtistPayment> update(@PathVariable("id") long id,
-                                                  @Valid @RequestBody ArtistPaymentDataSource artistPaymentDataSource){
+                                                  @Valid @RequestBody ArtistPaymentInputDto artistPaymentInputDto){
 
         log.info("request for updating artistPayment by id {} with parameters {}",
-                id, artistPaymentDataSource);
+                id, artistPaymentInputDto);
         ResponseEntity<Artist> artistResponseEntity = artistController.getOne(
-                artistPaymentDataSource.getArtistId());
+                artistPaymentInputDto.getArtistId());
         ResponseEntity<ArtistBill> artistBillResponseEntity = artistBillController.getOne(
-                artistPaymentDataSource.getArtistBillId());
+                artistPaymentInputDto.getArtistBillId());
         ArtistBill artistBill = artistBillResponseEntity.getBody();
         ArtistPayment artistPayment = new ArtistPayment(artistResponseEntity.getBody(),
-                null, artistPaymentDataSource.getAmount());
+                null, artistPaymentInputDto.getAmount());
         ArtistPayment artistPaymentFromDataBase = artistPaymentRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found artistPayment with id = " + id));

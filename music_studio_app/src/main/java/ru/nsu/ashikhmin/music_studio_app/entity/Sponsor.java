@@ -35,13 +35,11 @@ public class Sponsor {
 
     @NotNull
     @NotBlank
-    @JsonProperty("business_type")
     @Column(name = "business_type")
     private String businessType;
 
     @NotNull
     @NotBlank
-    @JsonProperty("sponsored_money")
     @Column(name = "sponsored_money")
     @Min(value = 5000)
     private Long sponsoredMoney;

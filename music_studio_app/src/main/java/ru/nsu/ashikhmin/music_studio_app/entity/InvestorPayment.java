@@ -29,7 +29,6 @@ public class InvestorPayment {
     @JoinColumn(name = "investor_id", referencedColumnName = "id")
     private Investor investor;
 
-    @JsonProperty("investor_bill_id")
     @Column(name = "investor_bill_id")
     private Long investorBillId;
 

@@ -1,27 +1,21 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
 import java.sql.Time;
 
 @Data
 @Getter
 @Setter
 @AllArgsConstructor
-public class WorkScheduleDataSource {
+public class WorkScheduleInputDto {
 
-    @JsonProperty("employee_id")
     private Long employeeId;
-    @JsonProperty("week_day")
     private Integer weekDay;
-    @JsonProperty("time_to_come")
     private Time timeToCome;
-    @JsonProperty("work_length")
     private Integer workLength;
 
     @Override

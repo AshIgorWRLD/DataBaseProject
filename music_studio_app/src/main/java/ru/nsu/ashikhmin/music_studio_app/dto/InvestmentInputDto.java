@@ -1,6 +1,5 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
@@ -8,13 +7,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InvestmentDataSource {
+public class InvestmentInputDto {
 
-    @JsonProperty("investor_id")
     private Long investorId;
-    @JsonProperty("recipient_id")
     private Long recipientId;
-    @JsonProperty("money_amount")
     private Long moneyAmount;
 
     @Override

@@ -1,6 +1,5 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.sql.Time;
@@ -10,12 +9,9 @@ import java.sql.Time;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArtistsAndGroupsOnEventDataSource {
-    @JsonProperty("artist_or_group_id")
+public class ArtistsAndGroupsOnEventInputDto {
     private Long artistPageId;
-    @JsonProperty("event_id")
     private Long eventId;
-    @JsonProperty("performance_time")
     private Time performanceTime;
     private Long income;
 

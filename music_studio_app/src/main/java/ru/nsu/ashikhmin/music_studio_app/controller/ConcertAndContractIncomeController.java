@@ -6,6 +6,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 import ru.nsu.ashikhmin.music_studio_app.entity.ConcertAndContractIncome;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ConcertAndContractIncomeDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ConcertAndContractIncomeInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ConcertAndContractIncomeRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -23,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/con_incomes")
+@RequestMapping("con_incomes")
 @Api(description = "Контроллер доходов с концертов и контрактов")
 public class ConcertAndContractIncomeController {
 
@@ -40,9 +44,11 @@ public class ConcertAndContractIncomeController {
 
     @GetMapping
     @ApiOperation("Получение списка доходов с концертов и контрактов")
-    public ResponseEntity<List<ConcertAndContractIncome>> list(){
+    public ResponseEntity<Page<ConcertAndContractIncome>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all concertAndContractIncomes");
-        List<ConcertAndContractIncome> concertAndContractIncomes = concertAndContractIncomeRepo.findAll();
+        Page<ConcertAndContractIncome> concertAndContractIncomes = concertAndContractIncomeRepo.findAll(pageable);
         if(concertAndContractIncomes.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -65,7 +71,7 @@ public class ConcertAndContractIncomeController {
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание нового дохода с концерта или контракта")
     public ResponseEntity<ConcertAndContractIncome> create(
-            @Valid @RequestBody ConcertAndContractIncomeDataSource concertAndContractIncomeDataSource){
+            @Valid @RequestBody ConcertAndContractIncomeInputDto concertAndContractIncomeDataSource){
         log.info("request for creating concertAndContractIncome from data source {}", concertAndContractIncomeDataSource);
         ResponseEntity<ArtistPage> artistPageResponseEntity =
                 artistPageController.getOne(
@@ -82,7 +88,7 @@ public class ConcertAndContractIncomeController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующем доходе с концерта или контракта")
     public ResponseEntity<ConcertAndContractIncome> update(@PathVariable("id") long id,
-                                         @Valid @RequestBody ConcertAndContractIncomeDataSource concertAndContractIncomeDataSource){
+                                         @Valid @RequestBody ConcertAndContractIncomeInputDto concertAndContractIncomeDataSource){
 
         log.info("request for updating concertAndContractIncome by id {} with parameters {}",
                 id, concertAndContractIncomeDataSource);

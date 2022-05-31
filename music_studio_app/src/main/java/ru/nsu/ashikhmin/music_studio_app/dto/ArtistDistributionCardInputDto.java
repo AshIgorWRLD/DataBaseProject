@@ -1,6 +1,5 @@
-package ru.nsu.ashikhmin.music_studio_app.postdatasource;
+package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
@@ -8,14 +7,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArtistDistributionCardDataSource {
-    @JsonProperty("artist_or_group_id")
+public class ArtistDistributionCardInputDto {
     private Long artistPageId;
-    @JsonProperty("distribution_service_id")
     private Long distributionServiceId;
-    @JsonProperty("listen_watch_amount")
     private Long listenWatchAmount;
-    @JsonProperty("monthly_listeners")
     private Long monthlyListeners;
 
     @Override

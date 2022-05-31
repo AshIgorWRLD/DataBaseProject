@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +17,7 @@ import ru.nsu.ashikhmin.music_studio_app.entity.Investor;
 import ru.nsu.ashikhmin.music_studio_app.entity.InvestorBill;
 import ru.nsu.ashikhmin.music_studio_app.entity.InvestorPayment;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.InvestorPaymentDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.InvestorPaymentInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.InvestorPaymentRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -45,9 +49,11 @@ public class InvestorPaymentController {
 
     @GetMapping
     @ApiOperation("Получение списка выплат инвесторам")
-    public ResponseEntity<List<InvestorPayment>> list(){
+    public ResponseEntity<Page<InvestorPayment>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all investorPayments");
-        List<InvestorPayment> investorPayments = investorPaymentRepo.findAll();
+        Page<InvestorPayment> investorPayments = investorPaymentRepo.findAll(pageable);
         if(investorPayments.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -69,19 +75,19 @@ public class InvestorPaymentController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой выплаты инвестору")
-    public ResponseEntity<InvestorPayment> create(@Valid @RequestBody InvestorPaymentDataSource investorPaymentDataSource){
-        log.info("request for creating investorPayment from data source {}", investorPaymentDataSource);
+    public ResponseEntity<InvestorPayment> create(@Valid @RequestBody InvestorPaymentInputDto investorPaymentInputDto){
+        log.info("request for creating investorPayment from data source {}", investorPaymentInputDto);
         ResponseEntity<Investor> investorResponseEntity = investorController.getOne(
-                investorPaymentDataSource.getInvestorId());
+                investorPaymentInputDto.getInvestorId());
         ResponseEntity<InvestorBill> investorBillResponseEntity = investorBillController.getOne(
-                investorPaymentDataSource.getInvestorBillId());
+                investorPaymentInputDto.getInvestorBillId());
         InvestorBill investorBill = investorBillResponseEntity.getBody();
         log.info("investor bill {}", investorBill);
         Set<InvestorBill> set = new HashSet<>();
         set.add(investorBill);
         set.forEach(x->log.info("set {}", x));
         InvestorPayment investorPayment = new InvestorPayment(investorResponseEntity.getBody(),
-                set, investorPaymentDataSource.getAmount());
+                set, investorPaymentInputDto.getAmount());
         investorPayment.setInvestorBillId(investorBill.getId());
         log.info("request for creating investorPayment with parameters {}", investorPayment);
         return new ResponseEntity<>(investorPaymentRepo.save(investorPayment), HttpStatus.OK);
@@ -90,17 +96,17 @@ public class InvestorPaymentController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей выплате инвестору")
     public ResponseEntity<InvestorPayment> update(@PathVariable("id") long id,
-                                                  @Valid @RequestBody InvestorPaymentDataSource investorPaymentDataSource){
+                                                  @Valid @RequestBody InvestorPaymentInputDto investorPaymentInputDto){
 
         log.info("request for updating investorPayment by id {} with parameters {}",
-                id, investorPaymentDataSource);
+                id, investorPaymentInputDto);
         ResponseEntity<Investor> investorResponseEntity = investorController.getOne(
-                investorPaymentDataSource.getInvestorId());
+                investorPaymentInputDto.getInvestorId());
         ResponseEntity<InvestorBill> investorBillResponseEntity = investorBillController.getOne(
-                investorPaymentDataSource.getInvestorBillId());
+                investorPaymentInputDto.getInvestorBillId());
         InvestorBill investorBill = investorBillResponseEntity.getBody();
         InvestorPayment investorPayment = new InvestorPayment(investorResponseEntity.getBody(),
-                null, investorPaymentDataSource.getAmount());
+                null, investorPaymentInputDto.getAmount());
         InvestorPayment investorPaymentFromDataBase = investorPaymentRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found investorPayment with id = " + id));

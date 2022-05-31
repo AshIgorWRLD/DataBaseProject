@@ -1,5 +1,6 @@
 package ru.nsu.ashikhmin.music_studio_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,27 +22,26 @@ public class SocialMediaStatistic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "artist_or_group_id", insertable = false, updatable = false)
+    private Long artistOrGroupId;
+
+    @JsonBackReference
     @NotNull
-    @OneToOne (cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-            CascadeType.REFRESH})
-    @JoinColumn(name = "artist_or_group_id", referencedColumnName = "id")
-    private ArtistPage artistPage;
+    @ManyToOne
+    private ArtistPage artistOrGroup;
 
     @NotNull
     @NotBlank
-    @JsonProperty("social_network")
     @Column(name = "social_network")
     private String socialNetwork;
 
     @NotNull
     @Positive
-    @JsonProperty("subscribers_amount")
     @Column(name = "subscribers_amount")
     private Long subscribersAmount;
 
     @NotNull
     @Positive
-    @JsonProperty("live_subscribers")
     @Column(name = "live_subscribers")
     private Long liveSubscribers;
 
@@ -49,7 +49,8 @@ public class SocialMediaStatistic {
 
     public SocialMediaStatistic(ArtistPage artistPage, String socialNetwork,
                                 Long subscribersAmount, Long liveSubscribers) {
-        this.artistPage = artistPage;
+        this.artistOrGroup = artistPage;
+        this.artistOrGroupId = artistPage.getId();
         this.socialNetwork = socialNetwork;
         this.subscribersAmount = subscribersAmount;
         this.liveSubscribers = liveSubscribers;
@@ -58,7 +59,7 @@ public class SocialMediaStatistic {
     @Override
     public String toString(){
         return "\nSocialMediaStatistic{" + "id=" + this.id + ", artist_or_group_id=" +
-                this.artistPage + ", social_network=" + this.socialNetwork +
+                this.artistOrGroup + ", social_network=" + this.socialNetwork +
                 ", subscribers_amount=" + this.subscribersAmount +
                 ", live_subscribers=" + this.liveSubscribers +"}";
     }

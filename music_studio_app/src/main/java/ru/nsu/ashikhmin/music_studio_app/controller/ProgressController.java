@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.Progress;
 import ru.nsu.ashikhmin.music_studio_app.entity.ArtistPage;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.ProgressDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.ProgressInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.ProgressRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -38,9 +42,11 @@ public class ProgressController {
 
     @GetMapping
     @ApiOperation("Получение списка прогрессов")
-    public ResponseEntity<List<Progress>> list(){
+    public ResponseEntity<Page<Progress>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all progresss");
-        List<Progress> progresss = progressRepo.findAll();
+        Page<Progress> progresss = progressRepo.findAll(pageable);
         if(progresss.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -62,18 +68,18 @@ public class ProgressController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой страницы исполнителя")
-    public ResponseEntity<Progress> create(@Valid @RequestBody ProgressDataSource progressDataSource){
+    public ResponseEntity<Progress> create(@Valid @RequestBody ProgressInputDto progressInputDto){
         log.info("request for creating progress from data source {}",
-                progressDataSource);
+                progressInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                progressDataSource.getArtistPageId());
+                progressInputDto.getArtistPageId());
         Progress progress = new Progress(
                 artistPageResponseEntity.getBody(),
-                progressDataSource.getSocialMediaCoefficient(),
-                progressDataSource.getAdvertisementCompaniesCoefficient(),
-                progressDataSource.getDistributionCoefficient(),
-                progressDataSource.getIncomesCoefficient(),
-                progressDataSource.getSupposedSuccessDate());
+                progressInputDto.getSocialMediaCoefficient(),
+                progressInputDto.getAdvertisementCompaniesCoefficient(),
+                progressInputDto.getDistributionCoefficient(),
+                progressInputDto.getIncomesCoefficient(),
+                progressInputDto.getSupposedSuccessDate());
 
         log.info("request for creating progress with parameters {}", progress);
 
@@ -83,19 +89,19 @@ public class ProgressController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей странице исполнителя")
     public ResponseEntity<Progress> update(@PathVariable("id") long id,
-                                                       @Valid @RequestBody ProgressDataSource progressDataSource){
+                                                       @Valid @RequestBody ProgressInputDto progressInputDto){
 
         log.info("request for updating progress by id {} with parameters {}",
-                id, progressDataSource);
+                id, progressInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                progressDataSource.getArtistPageId());
+                progressInputDto.getArtistPageId());
         Progress progress = new Progress(
                 artistPageResponseEntity.getBody(),
-                progressDataSource.getSocialMediaCoefficient(),
-                progressDataSource.getAdvertisementCompaniesCoefficient(),
-                progressDataSource.getDistributionCoefficient(),
-                progressDataSource.getIncomesCoefficient(),
-                progressDataSource.getSupposedSuccessDate());
+                progressInputDto.getSocialMediaCoefficient(),
+                progressInputDto.getAdvertisementCompaniesCoefficient(),
+                progressInputDto.getDistributionCoefficient(),
+                progressInputDto.getIncomesCoefficient(),
+                progressInputDto.getSupposedSuccessDate());
         Progress progressFromDataBase = progressRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found progress with id = " + id));

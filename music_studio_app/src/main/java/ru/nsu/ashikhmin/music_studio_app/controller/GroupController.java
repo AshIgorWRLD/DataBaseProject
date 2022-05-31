@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,9 +37,11 @@ public class GroupController {
 
     @GetMapping
     @ApiOperation("Получение списка групп")
-    public ResponseEntity<List<Group>> list(){
+    public ResponseEntity<Page<Group>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all groups");
-        List<Group> groups = groupRepo.findAll();
+        Page<Group> groups = groupRepo.findAll(pageable);
         if(groups.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

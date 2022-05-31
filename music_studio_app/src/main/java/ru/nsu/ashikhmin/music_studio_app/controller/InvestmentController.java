@@ -5,13 +5,17 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.*;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.InvestmentDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.InvestmentInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.InvestmentRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -43,9 +47,11 @@ public class InvestmentController {
 
     @GetMapping
     @ApiOperation("Получение списка инвестиций")
-    public ResponseEntity<List<Investment>> list(){
+    public ResponseEntity<Page<Investment>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all investments");
-        List<Investment> investments = investmentRepo.findAll();
+        Page<Investment> investments = investmentRepo.findAll(pageable);
         if(investments.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -67,19 +73,19 @@ public class InvestmentController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой инвестиции")
-    public ResponseEntity<Investment> create(@Valid @RequestBody InvestmentDataSource investmentDataSource){
-        log.info("request for creating investment from data source {}", investmentDataSource);
+    public ResponseEntity<Investment> create(@Valid @RequestBody InvestmentInputDto investmentInputDto){
+        log.info("request for creating investment from data source {}", investmentInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                investmentDataSource.getRecipientId());
+                investmentInputDto.getRecipientId());
         ResponseEntity<Investor> investorResponseEntity = investorController.getOne(
-                investmentDataSource.getInvestorId());
+                investmentInputDto.getInvestorId());
         ArtistPage recipient = artistPageResponseEntity.getBody();
         log.info("recipient {}", recipient);
         Set<ArtistPage> set = new HashSet<>();
         set.add(recipient);
         set.forEach(x->log.info("set {}", x));
         Investment investment = new Investment(investorResponseEntity.getBody(),
-                set, investmentDataSource.getMoneyAmount());
+                set, investmentInputDto.getMoneyAmount());
         log.info("request for creating investment with parameters {}", investment);
         return new ResponseEntity<>(investmentRepo.save(investment), HttpStatus.OK);
     }
@@ -87,18 +93,18 @@ public class InvestmentController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей инвестиции")
     public ResponseEntity<Investment> update(@PathVariable("id") long id,
-                                                  @Valid @RequestBody InvestmentDataSource investmentDataSource){
+                                                  @Valid @RequestBody InvestmentInputDto investmentInputDto){
 
         log.info("request for updating investment by id {} with parameters {}",
-                id, investmentDataSource);
-        log.info("request for creating investment from data source {}", investmentDataSource);
+                id, investmentInputDto);
+        log.info("request for creating investment from data source {}", investmentInputDto);
         ResponseEntity<ArtistPage> artistPageResponseEntity = artistPageController.getOne(
-                investmentDataSource.getRecipientId());
+                investmentInputDto.getRecipientId());
         ResponseEntity<Investor> investorResponseEntity = investorController.getOne(
-                investmentDataSource.getInvestorId());
+                investmentInputDto.getInvestorId());
         ArtistPage recipient = artistPageResponseEntity.getBody();
         Investment investment = new Investment(investorResponseEntity.getBody(),
-                null, investmentDataSource.getMoneyAmount());
+                null, investmentInputDto.getMoneyAmount());
         Investment investmentFromDataBase = investmentRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found investment with id = " + id));

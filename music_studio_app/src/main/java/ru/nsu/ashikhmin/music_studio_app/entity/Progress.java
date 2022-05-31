@@ -31,27 +31,22 @@ public class Progress {
     private ArtistPage artistPage;
 
     @NotNull
-    @JsonProperty("social_media_coefficient")
     @Column(name = "social_media_coefficient")
     private Double socialMediaCoefficient;
 
     @NotNull
-    @JsonProperty("advertisement_companies_coefficient")
     @Column(name = "advertisement_companies_coefficient")
     private Double advertisementCompaniesCoefficient;
 
     @NotNull
-    @JsonProperty("distribution_coefficient")
     @Column(name = "distribution_coefficient")
     private Double distributionCoefficient;
 
     @NotNull
-    @JsonProperty("incomes_coefficient")
     @Column(name = "incomes_coefficient")
     private Double incomesCoefficient;
 
     @NotNull
-    @JsonProperty("supposed_success_date")
     @Column(name = "supposed_success_date")
     private Date supposedSuccessDate;
 

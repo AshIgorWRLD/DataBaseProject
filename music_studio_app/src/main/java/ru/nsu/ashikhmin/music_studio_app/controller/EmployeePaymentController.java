@@ -5,13 +5,17 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.nsu.ashikhmin.music_studio_app.entity.*;
 import ru.nsu.ashikhmin.music_studio_app.exceptions.ResourceNotFoundException;
-import ru.nsu.ashikhmin.music_studio_app.postdatasource.EmployeePaymentDataSource;
+import ru.nsu.ashikhmin.music_studio_app.dto.EmployeePaymentInputDto;
 import ru.nsu.ashikhmin.music_studio_app.repository.EmployeePaymentRepo;
 import ru.nsu.ashikhmin.music_studio_app.utils.NullProperty;
 
@@ -43,9 +47,11 @@ public class EmployeePaymentController {
 
     @GetMapping
     @ApiOperation("Получение списка выплат работникам")
-    public ResponseEntity<List<EmployeePayment>> list(){
+    public ResponseEntity<Page<EmployeePayment>> list(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable
+    ){
         log.info("request for getting all employeePayments");
-        List<EmployeePayment> employeePayments = employeePaymentRepo.findAll();
+        Page<EmployeePayment> employeePayments = employeePaymentRepo.findAll(pageable);
         if(employeePayments.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -67,19 +73,19 @@ public class EmployeePaymentController {
 
     @PostMapping(consumes = {"*/*"})
     @ApiOperation("Создание новой выплаты работнику")
-    public ResponseEntity<EmployeePayment> create(@Valid @RequestBody EmployeePaymentDataSource employeePaymentDataSource){
-        log.info("request for creating employeePayment from data source {}", employeePaymentDataSource);
+    public ResponseEntity<EmployeePayment> create(@Valid @RequestBody EmployeePaymentInputDto employeePaymentInputDto){
+        log.info("request for creating employeePayment from data source {}", employeePaymentInputDto);
         ResponseEntity<Employee> employeeResponseEntity = employeeController.getOne(
-                employeePaymentDataSource.getEmployeeId());
+                employeePaymentInputDto.getEmployeeId());
         ResponseEntity<EmployeeBill> employeeBillResponseEntity = employeeBillController.getOne(
-                employeePaymentDataSource.getEmployeeBillId());
+                employeePaymentInputDto.getEmployeeBillId());
         EmployeeBill employeeBill = employeeBillResponseEntity.getBody();
         log.info("employee bill {}", employeeBill);
         Set<EmployeeBill> set = new HashSet<>();
         set.add(employeeBill);
         set.forEach(x->log.info("set {}", x));
         EmployeePayment employeePayment = new EmployeePayment(employeeResponseEntity.getBody(),
-                set, employeePaymentDataSource.getAmount());
+                set, employeePaymentInputDto.getAmount());
         employeePayment.setEmployeeBillId(employeeBill.getId());
         log.info("request for creating employeePayment with parameters {}", employeePayment);
         return new ResponseEntity<>(employeePaymentRepo.save(employeePayment), HttpStatus.OK);
@@ -88,17 +94,17 @@ public class EmployeePaymentController {
     @PutMapping("{id}")
     @ApiOperation("Обновление информации о существующей выплате работнику")
     public ResponseEntity<EmployeePayment> update(@PathVariable("id") long id,
-                                         @Valid @RequestBody EmployeePaymentDataSource employeePaymentDataSource){
+                                         @Valid @RequestBody EmployeePaymentInputDto employeePaymentInputDto){
 
         log.info("request for updating employeePayment by id {} with parameters {}",
-                id, employeePaymentDataSource);
+                id, employeePaymentInputDto);
         ResponseEntity<Employee> employeeResponseEntity = employeeController.getOne(
-                employeePaymentDataSource.getEmployeeId());
+                employeePaymentInputDto.getEmployeeId());
         ResponseEntity<EmployeeBill> employeeBillResponseEntity = employeeBillController.getOne(
-                employeePaymentDataSource.getEmployeeBillId());
+                employeePaymentInputDto.getEmployeeBillId());
         EmployeeBill employeeBill = employeeBillResponseEntity.getBody();
         EmployeePayment employeePayment = new EmployeePayment(employeeResponseEntity.getBody(),
-                null, employeePaymentDataSource.getAmount());
+                null, employeePaymentInputDto.getAmount());
         EmployeePayment employeePaymentFromDataBase = employeePaymentRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found employeePayment with id = " + id));

@@ -1,6 +1,7 @@
 package ru.nsu.ashikhmin.music_studio_app.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
@@ -32,6 +33,16 @@ public class ArtistPage {
     @JsonBackReference
     @ManyToMany(mappedBy = "recipients")
     private List<Investment> investments;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "artistOrGroup", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH})
+    private List<SocialMediaStatistic> statistics;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "artistOrGroup", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.REFRESH})
+    private List<ArtistDistributionCard> distributionCards;
 
     @Override
     public String toString(){
