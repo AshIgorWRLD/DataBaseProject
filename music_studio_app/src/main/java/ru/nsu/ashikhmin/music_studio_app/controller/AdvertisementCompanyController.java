@@ -25,6 +25,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("advertisement/companies")
 @Api(description = "Контроллер рекламных компаний")

@@ -23,6 +23,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("bills/investor")
 @Api(description = "Контроллер счетов инвесторов")

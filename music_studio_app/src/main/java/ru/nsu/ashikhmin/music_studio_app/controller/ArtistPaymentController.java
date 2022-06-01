@@ -28,6 +28,7 @@ import java.util.Set;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("payments/artist")
 @Api(description = "Контроллер выплат исполнителям")

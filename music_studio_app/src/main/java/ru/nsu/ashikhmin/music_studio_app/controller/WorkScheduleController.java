@@ -28,6 +28,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("users/employees/schedule")
 @Api(description = "Контроллер расписания работников")

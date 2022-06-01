@@ -25,6 +25,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("events/sponsors")
 @Api(description = "Контроллер спонсоров")
