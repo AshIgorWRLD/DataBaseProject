@@ -26,6 +26,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("artist_pages/goals")
 @Api(description = "Контроллер целей")

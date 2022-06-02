@@ -26,6 +26,7 @@ import java.util.Set;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("payments/employee")
 @Api(description = "Контроллер выплат работникам")

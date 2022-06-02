@@ -32,6 +32,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("events/participants")
 @Api(description = "Контроллер участников мероприятий")

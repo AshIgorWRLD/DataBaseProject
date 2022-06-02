@@ -23,6 +23,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("bills/artist")
 @Api(description = "Контроллер счетов исполнителей")

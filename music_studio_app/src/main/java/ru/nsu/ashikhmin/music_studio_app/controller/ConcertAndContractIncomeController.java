@@ -26,6 +26,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("con_incomes")
 @Api(description = "Контроллер доходов с концертов и контрактов")

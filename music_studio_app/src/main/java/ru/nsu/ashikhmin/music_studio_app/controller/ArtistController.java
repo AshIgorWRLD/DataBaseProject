@@ -26,6 +26,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("users/clients/artists")
 @Api(description = "Контроллер исполнителей")

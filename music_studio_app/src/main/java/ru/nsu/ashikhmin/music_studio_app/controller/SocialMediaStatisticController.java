@@ -25,6 +25,7 @@ import java.util.List;
 
 @Slf4j
 @Validated
+@CrossOrigin
 @RestController
 @RequestMapping("sm/statistic")
 @Api(description = "Контроллер статистики соц сетей")
