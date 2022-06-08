@@ -125,6 +125,8 @@ public class SQLAdds {
                 .append("\" ");
     }
 
-
+    public static String refactorToColumnName(String name){
+        return null;
+    }
 }
 

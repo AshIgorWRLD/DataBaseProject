@@ -98,10 +98,13 @@ public class DistributionServiceController {
                     "listen_watch_cost", SQLAdds.DISTRIBUTION_SERVICE_TABLE);
             sqlRequest.append(")");
         }
-        sqlRequest.append(" ")
-                .append(SQLAdds.ORDER_BY)
-                .append(" id;");
-
+        if (customDistributionServiceInputDto.isFiltrationField()) {
+            sqlRequest.append(" ")
+                    .append(SQLAdds.ORDER_BY)
+                    .append(" ")
+                    .append(customDistributionServiceInputDto.getFiltration())
+                    .append(";");
+        }
         log.info("Filtration request: " + sqlRequest.toString());
         List<DistributionService> out = entityManager.createNativeQuery(sqlRequest.toString(),
                         DistributionService.class).getResultList();

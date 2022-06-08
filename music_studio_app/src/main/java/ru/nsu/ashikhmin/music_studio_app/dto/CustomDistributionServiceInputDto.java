@@ -1,6 +1,5 @@
 package ru.nsu.ashikhmin.music_studio_app.dto;
 
-import liquibase.pro.packaged.D;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -13,9 +12,16 @@ import ru.nsu.ashikhmin.music_studio_app.utils.SQLAdds;
 @AllArgsConstructor
 public class CustomDistributionServiceInputDto {
 
+    private static final String ID_FILTRATION = "id";
+    private static final String NAME_FILTRATION = "name";
+    private static final String TYPE_FILTRATION = "type";
+    private static final String COST_FILTRATION = "listenWatchCost";
+
+
     private String type;
     private Double lowestListenWatchCost;
     private Double highestListenWatchCost;
+    private String filtrationField;
 
     @Override
     public String toString() {
@@ -39,6 +45,21 @@ public class CustomDistributionServiceInputDto {
         return lowestListenWatchCost != null && highestListenWatchCost != null;
     }
 
+    public boolean isFiltrationField(){
+        if(filtrationField == null){
+            return false;
+        }
+        return filtrationField.equals(ID_FILTRATION) || filtrationField.equals(NAME_FILTRATION)
+                || filtrationField.equals(TYPE_FILTRATION) || filtrationField.equals(COST_FILTRATION);
+    }
+
+    public String getFiltration(){
+        if(filtrationField.equals(COST_FILTRATION)){
+            return "listen_watch_cost";
+        }
+        return filtrationField;
+    }
+
     public void addType(StringBuilder stringBuilder, Boolean[] isNotFirst){
         if (!isType()) {
             return;
@@ -55,5 +76,8 @@ public class CustomDistributionServiceInputDto {
                 .append(type)
                 .append("'");
     }
+
+
+
 
 }

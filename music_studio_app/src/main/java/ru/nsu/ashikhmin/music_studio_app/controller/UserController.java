@@ -49,6 +49,18 @@ public class UserController{
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @GetMapping("no_pagination")
+    @ApiOperation("Получение списка пользователей без пагинации")
+    public ResponseEntity<List<User>> noPaginationList(){
+        log.info("request for getting all users");
+        List<User> users = userRepo.findAll();
+        if(users.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("Получение пользователя по id")
     public ResponseEntity<User> getOne(@PathVariable("id") Long id) {
